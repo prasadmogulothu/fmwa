@@ -1,0 +1,31 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['assets/fmwa.png'],
+      workbox: {
+        // banner.png is ~2.6MB; raise the precache limit so it works offline
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,woff2}']
+      },
+      manifest: {
+        name: 'Fortune Meadows Welfare Association',
+        short_name: 'Fortune Meadows',
+        description: 'Colony welfare association — events, galleries and announcements.',
+        theme_color: '#17120c',
+        background_color: '#f2e8d5',
+        display: 'standalone',
+        start_url: '/',
+        icons: [
+          { src: '/assets/fmwa.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: '/assets/fmwa.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+        ]
+      }
+    })
+  ]
+});
