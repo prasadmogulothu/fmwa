@@ -16,16 +16,15 @@ export default function Event() {
       <Head />
 
       <section className="a-eh">
-        <img src={ev.cover} alt="" />
+        <div className="a-eh-art">
+          <img src={ev.thumb} alt={ev.title} />
+        </div>
         <div className="a-eh-in">
           <span className="a-when">{ev.when}</span>
           <h1>{ev.title}</h1>
           <span className="a-te">{ev.telugu}</span>
+          <p>{ev.blurb}</p>
         </div>
-      </section>
-
-      <section className="a-eb">
-        <p>{ev.blurb}</p>
       </section>
 
       <section className="a-eg">

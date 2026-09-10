@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEvents } from '../../data/events.js';
+import { BODY_YEAR, OFFICE, MEMBERS, CONGRATS } from '../../data/committee.js';
 import { Head, Foot } from './Chrome.jsx';
 
 export default function Home() {
@@ -24,7 +25,7 @@ export default function Home() {
             {events.map((e) => (
               <li key={e.slug} style={{ '--ac': e.accent }}>
                 <Link to={`/event/${e.slug}`}>
-                  <img src={e.cover} alt="" loading="lazy" />
+                  <img src={e.thumb} alt="" loading="lazy" />
                   <span>
                     <b>{e.title}</b>
                     <i>{e.when}</i>
@@ -44,7 +45,7 @@ export default function Home() {
           <h2>About the association</h2>
           <p>
             Fortune Meadows Welfare Association was started in 2017, when the first residents
-            elected <b>RajaSekhar</b> as president and formed an executive committee alongside him.
+            elected <b>K. V. Rajashekar</b> as president and formed an executive committee alongside him.
           </p>
           <p>
             The committee handles the everyday running of the colony — water, security, the
@@ -58,8 +59,8 @@ export default function Home() {
             <dd>2017</dd>
           </div>
           <div>
-            <dt>President</dt>
-            <dd>RajaSekhar</dd>
+            <dt>Founding president</dt>
+            <dd>K. V. Rajashekar</dd>
           </div>
           <div>
             <dt>Run by</dt>
@@ -68,9 +69,33 @@ export default function Home() {
         </dl>
       </section>
 
+
+      <section className="a-body">
+        <div className="a-body-h">
+          <h2>{BODY_YEAR} Elected Body</h2>
+          <p>{CONGRATS}</p>
+        </div>
+        <dl className="a-office">
+          {OFFICE.map(([role, name]) => (
+            <div key={role}>
+              <dt>{role}</dt>
+              <dd>{name}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className="a-exec">
+          <h3>Executive committee</h3>
+          <ul>
+            {MEMBERS.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <section className="a-fest" id="festivals">
         <div className="a-fest-h">
-          <h2>The festival year</h2>
+          <h2>2026 - Events</h2>
           <p>Three occasions the colony keeps, every year, at the gate and in the open plot.</p>
         </div>
 
@@ -84,7 +109,7 @@ export default function Home() {
               style={{ '--ac': e.accent }}
             >
               <span className="a-card-img">
-                <img src={e.cover} alt="" loading="lazy" />
+                <img src={e.thumb} alt="" loading="lazy" />
               </span>
               <span className="a-card-b">
                 <span className="a-when">{e.when}</span>

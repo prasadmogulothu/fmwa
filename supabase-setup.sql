@@ -23,7 +23,8 @@ create table if not exists public.fmwa_events (
   line       text,            -- one-line description on the card
   blurb      text,
   accent     text not null default '#c2542a',
-  cover      text,            -- URL of the card/hero image
+  cover      text,            -- URL of a photo from the event
+  thumb      text,            -- URL of the festival illustration used as the thumbnail
   sort       int  not null default 0
 );
 
@@ -35,6 +36,7 @@ create table if not exists public.fmwa_photos (
   caption    text,
   sort       int not null default 0
 );
+alter table public.fmwa_events add column if not exists thumb text;
 create index if not exists fmwa_photos_event_idx on public.fmwa_photos (event_id, sort);
 
 -- -------------------------------------------------- the scoped role
@@ -94,20 +96,20 @@ create policy fmwa_storage_admin_write on storage.objects
 -- Matches the three festivals bundled in src/data/events.js. Photo rows are
 -- left out on purpose: upload the real photos through admin, which writes both
 -- the storage object and the fmwa_photos row.
-insert into public.fmwa_events (slug, title, telugu, when_text, line, blurb, accent, cover, sort)
+insert into public.fmwa_events (slug, title, telugu, when_text, line, blurb, accent, cover, thumb, sort)
 values
   ('independence-day', 'Independence Day', 'స్వాతంత్ర్య దినోత్సవం', '15 August',
    'Flag hoisting at the gate',
    'The committee and residents gather at the main gate before nine. The flag goes up, children sing, and sweets are handed out block by block before everyone leaves for the day.',
-   '#c2542a', '/assets/id-1.jpeg', 1),
+   '#c2542a', '/assets/id-1.jpeg', '/assets/thumb-independence-day.png', 1),
   ('krishnashtami', 'Krishnashtami', 'శ్రీ కృష్ణాష్టమి', 'Sravana masam',
-   'Uri Adi in the open plot',
+   'Janmashtami Celebrations',
    'Little Krishnas in fancy dress through the morning, the uri strung up high in the afternoon, and bhajans until the pot finally breaks. Prasadam goes to every household.',
-   '#1f5fa8', '/assets/krishnashtami-2.jpeg', 2),
+   '#1f5fa8', '/assets/krishnashtami-2.jpeg', '/assets/thumb-krishnashtami.png', 2),
   ('ganesh-chaturthi', 'Ganesh Chaturthi', 'వినాయక చవితి', 'Bhadrapada masam',
    'Nine days at the colony pandal',
    'Vinayaka is installed at the pandal on the first morning and stays nine days. Pooja twice a day, cultural evenings for the children, and an eco-friendly nimajjanam to close.',
-   '#b8862b', '/assets/ganesh-1.jpeg', 3)
+   '#b8862b', '/assets/ganesh-1.jpeg', '/assets/thumb-ganesh-chaturthi.png', 3)
 on conflict (slug) do nothing;
 
 -- ============================ STEP 3 ============================

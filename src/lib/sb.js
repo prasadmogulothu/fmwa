@@ -10,7 +10,7 @@ export const HEAD = { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY };
 
 // One request: events with their photos embedded, newest committee ordering first.
 const SELECT =
-  'select=slug,title,telugu,when_text,line,blurb,accent,cover,fmwa_photos(url,sort)&order=sort.asc&fmwa_photos.order=sort.asc';
+  'select=slug,title,telugu,when_text,line,blurb,accent,cover,thumb,fmwa_photos(url,sort)&order=sort.asc&fmwa_photos.order=sort.asc';
 
 export async function fetchEvents() {
   const r = await fetch(`${SB_URL}/rest/v1/fmwa_events?${SELECT}`, { headers: HEAD });
@@ -26,6 +26,7 @@ export async function fetchEvents() {
     blurb: e.blurb || '',
     accent: e.accent || '#c2542a',
     cover: e.cover,
+    thumb: e.thumb,
     photos: (e.fmwa_photos || []).map((p) => p.url)
   }));
 }

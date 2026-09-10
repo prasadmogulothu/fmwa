@@ -10,6 +10,7 @@ import { fetchEvents } from '../lib/sb.js';
 export const EVENTS = [
   {
     slug: 'independence-day',
+    thumb: '/assets/thumb-independence-day.png',
     title: 'Independence Day',
     telugu: 'స్వాతంత్ర్య దినోత్సవం',
     when: '15 August',
@@ -22,10 +23,11 @@ export const EVENTS = [
   },
   {
     slug: 'krishnashtami',
+    thumb: '/assets/thumb-krishnashtami.png',
     title: 'Krishnashtami',
     telugu: 'శ్రీ కృష్ణాష్టమి',
     when: 'Sravana masam',
-    line: 'Uri Adi in the open plot',
+    line: 'Janmashtami Celebrations',
     blurb:
       'Little Krishnas in fancy dress through the morning, the uri strung up high in the afternoon, and bhajans until the pot finally breaks. Prasadam goes to every household.',
     accent: '#1F5FA8',
@@ -39,6 +41,7 @@ export const EVENTS = [
   },
   {
     slug: 'ganesh-chaturthi',
+    thumb: '/assets/thumb-ganesh-chaturthi.png',
     title: 'Ganesh Chaturthi',
     telugu: 'వినాయక చవితి',
     when: 'Bhadrapada masam',

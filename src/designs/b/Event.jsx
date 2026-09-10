@@ -22,7 +22,7 @@ export default function Event() {
           <span className="b-te">{ev.telugu}</span>
           <p>{ev.blurb}</p>
         </div>
-        <img src={ev.cover} alt="" />
+        <img src={ev.thumb} alt={ev.title} />
       </section>
 
       <section className="b-eg">

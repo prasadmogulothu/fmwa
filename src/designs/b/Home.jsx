@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEvents } from '../../data/events.js';
+import { BODY_YEAR, OFFICE, MEMBERS, CONGRATS } from '../../data/committee.js';
 import { Head, Foot } from './Chrome.jsx';
 
 export default function Home() {
@@ -24,6 +25,7 @@ export default function Home() {
             {events.map((e) => (
               <li key={e.slug} style={{ '--ac': e.accent }}>
                 <Link to={`/b/event/${e.slug}`}>
+                  <img src={e.thumb} alt="" loading="lazy" />
                   <b>{e.title}</b>
                   <i>{e.when}</i>
                 </Link>
@@ -44,7 +46,7 @@ export default function Home() {
         <div className="b-about-t">
           <p>
             Fortune Meadows Welfare Association was started in <b>2017</b> by the residents of the
-            colony. <b>RajaSekhar</b> was elected president, and an executive committee was formed
+            colony. <b>K. V. Rajashekar</b> was elected president, and an executive committee was formed
             with him.
           </p>
           <p>
@@ -54,12 +56,36 @@ export default function Home() {
         </div>
       </section>
 
+
+      <section className="b-body">
+        <div className="b-body-h">
+          <h2>{BODY_YEAR} Elected Body</h2>
+          <p>{CONGRATS}</p>
+        </div>
+        <dl className="b-office">
+          {OFFICE.map(([role, name]) => (
+            <div key={role}>
+              <dt>{role}</dt>
+              <dd>{name}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className="b-exec">
+          <h3>Executive committee</h3>
+          <ul>
+            {MEMBERS.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <section className="b-fest">
         <h2>Festivals</h2>
         {events.map((e) => (
           <Link className="b-panel" key={e.slug} to={`/b/event/${e.slug}`} style={{ '--ac': e.accent }}>
             <span className="b-panel-img">
-              <img src={e.cover} alt="" loading="lazy" />
+              <img src={e.thumb} alt="" loading="lazy" />
             </span>
             <span className="b-panel-t">
               <span className="b-when">{e.when}</span>
