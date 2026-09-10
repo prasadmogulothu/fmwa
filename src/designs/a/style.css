@@ -130,16 +130,13 @@
   left: clamp(16px, 4vw, 48px);
   right: clamp(16px, 4vw, 48px);
   bottom: clamp(26px, 4.5vw, 58px);
+  /* leaves the bottom-right corner clear for the festival list */
+  max-width: min(56%, 660px);
   color: var(--paper);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
-  gap: clamp(18px, 4vw, 56px);
 }
 .a-hero h1 { font-size: clamp(34px, 5.4vw, 68px); }
 .a-hero h1 em { display: block; font-style: italic; opacity: 0.94; }
 .a-hero-p {
-  grid-column: 1;
   max-width: 46ch;
   margin-top: 16px;
   font-size: clamp(15px, 1.7vw, 18px);
@@ -149,10 +146,12 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: end;
-  min-width: min(360px, 40vw);
+  position: absolute;
+  z-index: 1;
+  right: clamp(16px, 4vw, 48px);
+  bottom: clamp(26px, 4.5vw, 58px);
+  width: min(360px, 40vw);
+  color: var(--paper);
   display: grid;
   gap: 8px;
 }
@@ -432,12 +431,7 @@
   .a-about { grid-template-columns: 1fr; }
   .a-cards { grid-template-columns: 1fr; }
   .a-cards > :nth-child(2), .a-cards > :nth-child(3) { margin-top: 0; }
-  .a-hero-in { grid-template-columns: 1fr; }
-                                .a-eh {
-                                  grid-template-columns: 1fr;
-                                  padding-top: clamp(70px, 14vw, 96px);
-                                }
-  .a-index { grid-column: 1; grid-row: auto; margin-top: 20px; min-width: 0; }
+  .a-eh { grid-template-columns: 1fr; }
   .a-index a:hover { transform: none; }
 }
 /* Phones and tablets: stop overlaying the hero copy on the gate photo — below
@@ -487,14 +481,23 @@
     display: none;
   }
 
+  /* copy, then the photo, then the festival list — same order as Design B */
   .a-hero>img {
     order: 2;
     height: clamp(210px, 40svh, 330px);
   }
 
+  .a-index {
+    position: static;
+    order: 3;
+    width: auto;
+    padding: 20px clamp(14px, 4vw, 24px) 26px;
+  }
+
   .a-hero-in {
     position: static;
     order: 1;
+    max-width: none;
     display: block;
     text-align: center;
     padding: 20px clamp(14px, 4vw, 24px) 24px;
@@ -507,11 +510,6 @@
   .a-hero-p {
     margin: 12px auto 0;
     max-width: 42ch;
-  }
-
-  .a-index {
-    margin-top: 20px;
-    min-width: 0;
   }
 
   .a-index a {

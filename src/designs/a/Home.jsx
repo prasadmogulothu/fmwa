@@ -21,23 +21,24 @@ export default function Home() {
             Formed in 2017 by the residents of the colony, and run since then by an elected
             committee.
           </p>
-          <ul className="a-index">
-            {events.map((e) => (
-              <li key={e.slug} style={{ '--ac': e.accent }}>
-                <Link to={`/event/${e.slug}`}>
-                  <img src={e.thumb} alt="" loading="lazy" />
-                  <span>
-                    <b>{e.title}</b>
-                    <i>{e.when}</i>
-                  </span>
-                  <em>
-                    {e.photos.length} {e.photos.length === 1 ? 'photo' : 'photos'}
-                  </em>
-                </Link>
-              </li>
-            ))}
-          </ul>
         </div>
+
+        <ul className="a-index">
+          {events.map((e) => (
+            <li key={e.slug} style={{ '--ac': e.accent }}>
+              <Link to={`/event/${e.slug}`}>
+                <img src={e.thumb} alt="" loading="lazy" />
+                <span>
+                  <b>{e.title}</b>
+                  <i>{e.when}</i>
+                </span>
+                <em>
+                  {e.photos.length} {e.photos.length === 1 ? 'photo' : 'photos'}
+                </em>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="a-about">
