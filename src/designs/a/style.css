@@ -77,13 +77,29 @@
 .a-home:hover { background: var(--paper); color: var(--ink); }
 .a-mark {
   text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.a-logo {
+  width: 50px;
+  height: 50px;
+  flex: none;
+  border-radius: 13px;
+  background: #fff;
+  padding: 2px;
+  object-fit: contain;
+  box-shadow: 0 2px 10px -4px rgba(12, 8, 4, 0.6);
+}
+.a-mark-t { display: grid; gap: 3px; }
+.a-mark-t b {
   font-family: 'Instrument Serif', Georgia, serif;
+  font-weight: 400;
   font-size: clamp(19px, 2.6vw, 26px);
   line-height: 1;
-  display: grid;
-  gap: 3px;
 }
-.a-mark span {
+.a-mark-t i {
+  font-style: normal;
   font-family: Karla, sans-serif;
   font-size: 10.5px;
   letter-spacing: 0.24em;
@@ -235,6 +251,7 @@
   margin-inline: auto;
   padding: 0 clamp(16px, 4vw, 48px) clamp(48px, 7vw, 92px);
 }
+.a-term + .a-term { margin-top: clamp(30px, 4vw, 52px); }
 .a-body-h {
   display: flex;
   justify-content: space-between;
@@ -525,9 +542,11 @@
   .a-allf { display: none; }
   /* the wordmark and the controls will not share one row at this width */
   .a-head { flex-wrap: wrap; row-gap: 10px; padding-top: 12px; }
-  .a-mark { flex: 1 1 100%; font-size: 21px; }
+  .a-mark { flex: 1 1 100%; }
+  .a-mark-t b { font-size: 21px; }
+  .a-logo { width: 40px; height: 40px; border-radius: 11px; }
   .a-headr { width: 100%; margin-left: 0; justify-content: flex-start; }
   .a-bgs button { padding: 6px 8px; font-size: 11px; }
   .a-next { grid-template-columns: 1fr; }
-  .a-mark span { display: none; }
+  .a-mark-t i { display: none; }
 }

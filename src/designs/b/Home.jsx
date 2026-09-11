@@ -1,7 +1,34 @@
 import { Link } from 'react-router-dom';
 import { useEvents } from '../../data/events.js';
-import { BODY_YEAR, OFFICE, MEMBERS, CONGRATS } from '../../data/committee.js';
+import { BODIES } from '../../data/committee.js';
 import { Head, Foot } from './Chrome.jsx';
+
+function ElectedBody({ year, note, office, members }) {
+  return (
+    <div className="b-term">
+      <div className="b-body-h">
+        <h2>{year} Elected Body</h2>
+        {note && <p>{note}</p>}
+      </div>
+      <dl className="b-office">
+        {office.map(([role, name]) => (
+          <div key={role}>
+            <dt>{role}</dt>
+            <dd>{name}</dd>
+          </div>
+        ))}
+      </dl>
+      <div className="b-exec">
+        <h3>Executive members</h3>
+        <ul>
+          {members.map((m) => (
+            <li key={m}>{m}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const { events } = useEvents();
@@ -12,7 +39,7 @@ export default function Home() {
 
       <section className="b-hero">
         <div className="b-hero-t">
-          <span className="b-est">Colony welfare association, est. 2017</span>
+          <span className="b-est">Colony welfare association, est. 2018</span>
           <h1>
             Fortune Meadows
             <span>Welfare Association</span>
@@ -45,8 +72,8 @@ export default function Home() {
         </blockquote>
         <div className="b-about-t">
           <p>
-            Fortune Meadows Welfare Association was started in <b>2017</b> by the residents of the
-            colony. <b>K. V. Rajashekar</b> was elected president, and an executive committee was formed
+            Fortune Meadows Welfare Association was registered and started on <b>February 6, 2018</b> by the residents of the
+            colony. <b>K. V. Rajasekhar</b> was elected president, and an executive committee was formed
             with him.
           </p>
           <p>
@@ -58,26 +85,9 @@ export default function Home() {
 
 
       <section className="b-body">
-        <div className="b-body-h">
-          <h2>{BODY_YEAR} Elected Body</h2>
-          <p>{CONGRATS}</p>
-        </div>
-        <dl className="b-office">
-          {OFFICE.map(([role, name]) => (
-            <div key={role}>
-              <dt>{role}</dt>
-              <dd>{name}</dd>
-            </div>
-          ))}
-        </dl>
-        <div className="b-exec">
-          <h3>Executive committee</h3>
-          <ul>
-            {MEMBERS.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
-        </div>
+        {BODIES.map((b) => (
+          <ElectedBody key={b.year} {...b} />
+        ))}
       </section>
 
       <section className="b-fest">

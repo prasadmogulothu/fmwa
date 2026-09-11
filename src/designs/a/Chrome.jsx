@@ -41,8 +41,11 @@ export function Head({ home = false }) {
   return (
     <header className="a-head">
       <Link to="/" className="a-mark">
-        Fortune Meadows
-        <span>Welfare Association</span>
+        <img className="a-logo" src="/assets/logo-mark.png" alt="" />
+        <span className="a-mark-t">
+          <b>Fortune Meadows</b>
+          <i>Welfare Association</i>
+        </span>
       </Link>
       <div className="a-headr">
         {!home && <Link className="a-allf" to="/#festivals">All festivals</Link>}

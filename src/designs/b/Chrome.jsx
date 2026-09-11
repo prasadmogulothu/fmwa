@@ -5,8 +5,11 @@ export function Head() {
   return (
     <header className="b-head">
       <Link to="/b" className="b-mark">
-        <b>Fortune Meadows</b>
-        <span>Welfare Association</span>
+        <img className="b-logo" src="/assets/logo-mark.png" alt="" />
+        <span className="b-mark-t">
+          <b>Fortune Meadows</b>
+          <i>Welfare Association</i>
+        </span>
       </Link>
       <div className="b-headr">
         <Link to="/b" className="b-home" aria-label="Home" title="Home">

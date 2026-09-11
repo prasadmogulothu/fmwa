@@ -1,7 +1,34 @@
 import { Link } from 'react-router-dom';
 import { useEvents } from '../../data/events.js';
-import { BODY_YEAR, OFFICE, MEMBERS, CONGRATS } from '../../data/committee.js';
+import { BODIES } from '../../data/committee.js';
 import { Head, Foot } from './Chrome.jsx';
+
+function ElectedBody({ year, note, office, members }) {
+  return (
+    <div className="a-term">
+      <div className="a-body-h">
+        <h2>{year} Elected Body</h2>
+        {note && <p>{note}</p>}
+      </div>
+      <dl className="a-office">
+        {office.map(([role, name]) => (
+          <div key={role}>
+            <dt>{role}</dt>
+            <dd>{name}</dd>
+          </div>
+        ))}
+      </dl>
+      <div className="a-exec">
+        <h3>Executive members</h3>
+        <ul>
+          {members.map((m) => (
+            <li key={m}>{m}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const { events } = useEvents();
@@ -45,8 +72,8 @@ export default function Home() {
         <div className="a-about-t">
           <h2>About the association</h2>
           <p>
-            Fortune Meadows Welfare Association was started in 2017, when the first residents
-            elected <b>K. V. Rajashekar</b> as president and formed an executive committee alongside him.
+            Fortune Meadows Welfare Association was registered on February 6, 2018, when the first residents
+            elected <b>K. V. Rajasekhar</b> as president and formed an executive committee alongside him.
           </p>
           <p>
             The committee handles the everyday running of the colony — water, security, the
@@ -57,11 +84,11 @@ export default function Home() {
         <dl className="a-plate">
           <div>
             <dt>Formed</dt>
-            <dd>2017</dd>
+            <dd>2018</dd>
           </div>
           <div>
             <dt>Founding president</dt>
-            <dd>K. V. Rajashekar</dd>
+            <dd>K. V. Rajasekhar</dd>
           </div>
           <div>
             <dt>Run by</dt>
@@ -72,26 +99,9 @@ export default function Home() {
 
 
       <section className="a-body">
-        <div className="a-body-h">
-          <h2>{BODY_YEAR} Elected Body</h2>
-          <p>{CONGRATS}</p>
-        </div>
-        <dl className="a-office">
-          {OFFICE.map(([role, name]) => (
-            <div key={role}>
-              <dt>{role}</dt>
-              <dd>{name}</dd>
-            </div>
-          ))}
-        </dl>
-        <div className="a-exec">
-          <h3>Executive committee</h3>
-          <ul>
-            {MEMBERS.map((m) => (
-              <li key={m}>{m}</li>
-            ))}
-          </ul>
-        </div>
+        {BODIES.map((b) => (
+          <ElectedBody key={b.year} {...b} />
+        ))}
       </section>
 
       <section className="a-fest" id="festivals">
