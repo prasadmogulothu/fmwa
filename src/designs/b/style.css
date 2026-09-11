@@ -7,7 +7,7 @@
   --saffron: #f0a01f;
   background: var(--paper);
   color: var(--ink);
-  font-family: Archivo, system-ui, sans-serif;
+  font-family: Archivo, 'Noto Sans Telugu', system-ui, sans-serif;
   font-size: 17px;
   line-height: 1.6;
   min-height: 100dvh;

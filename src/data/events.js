@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fetchEvents } from '../lib/sb.js';
 
-// Everything the site knows about the three festivals.
+// Everything the site knows about the festivals.
 //
 // ponytail: the seed below is what ships in the bundle, so the site renders
 // instantly and works offline. When the Supabase tables exist, loadEvents()
@@ -18,8 +18,13 @@ export const EVENTS = [
     blurb:
       'The committee and residents gather at the main gate before nine. The flag goes up, children sing, and sweets are handed out block by block before everyone leaves for the day.',
     accent: '#C2542A',
-    cover: '/assets/id-1.jpeg',
-    photos: ['/assets/id-1.jpeg', '/assets/id-2.jpeg']
+    cover: '/assets/independence-1.jpeg',
+    photos: [
+      '/assets/independence-1.jpeg',
+      '/assets/independence-2.jpeg',
+      '/assets/independence-3.jpeg',
+      '/assets/independence-4.jpeg'
+    ]
   },
   {
     slug: 'krishnashtami',
@@ -29,7 +34,7 @@ export const EVENTS = [
     when: 'Sravana masam',
     line: 'Janmashtami Celebrations',
     blurb:
-      'Little Krishnas in fancy dress through the morning, the uri strung up high in the afternoon, and bhajans until the pot finally breaks. Prasadam goes to every household.',
+      'Little Krishnas in fancy dress through the morning, and the Dahi Handi (ఉట్టి) strung up high in the afternoon until it is finally broken. Prasadam goes to every household.',
     accent: '#1F5FA8',
     cover: '/assets/krishnashtami-2.jpeg',
     photos: [

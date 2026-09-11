@@ -15,7 +15,7 @@
   --ac: var(--terra);
   background: var(--stucco);
   color: var(--ink);
-  font-family: Karla, system-ui, sans-serif;
+  font-family: Karla, 'Noto Sans Telugu', system-ui, sans-serif;
   font-size: 17px;
   line-height: 1.65;
   min-height: 100dvh;

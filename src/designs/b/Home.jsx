@@ -45,8 +45,8 @@ export default function Home() {
             <span>Welfare Association</span>
           </h1>
           <p>
-            An elected committee, three festivals a year, and a colony that turns out for every
-            one of them.
+            An elected committee, a calendar full of festivals, and a colony that turns out for
+            every one of them.
           </p>
           <ul className="b-chips">
             {events.map((e) => (
@@ -75,7 +75,7 @@ export default function Home() {
           </p>
           <p>
             Between them they look after water, security, the park and the common areas — and
-            they organise the three festivals below.
+            they organise the festivals below.
           </p>
         </div>
       </section>

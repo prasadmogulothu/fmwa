@@ -77,8 +77,8 @@ export default function Home() {
           </p>
           <p>
             The committee handles the everyday running of the colony — water, security, the
-            common areas, the park — and puts together the three festivals the whole colony
-            turns out for.
+            common areas, the park — and puts together the festivals the whole colony turns out
+            for.
           </p>
         </div>
         <dl className="a-plate">
@@ -107,7 +107,7 @@ export default function Home() {
       <section className="a-fest" id="festivals">
         <div className="a-fest-h">
           <h2>2026 - Events</h2>
-          <p>Three occasions the colony keeps, every year, at the gate and in the open plot.</p>
+          <p>Celebrated every year at the gate, in the open plot and at the colony pandal.</p>
         </div>
 
         <div className="a-cards">
