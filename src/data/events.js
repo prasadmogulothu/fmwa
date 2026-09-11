@@ -38,11 +38,14 @@ export const EVENTS = [
     accent: '#1F5FA8',
     cover: '/assets/krishnashtami-2.jpeg',
     photos: [
+      '/assets/krishnashtami.jpeg',
       '/assets/krishnashtami-2.jpeg',
       '/assets/krishnashtami-1.jpeg',
       '/assets/krishnashtami-4.jpeg',
       '/assets/krishnashtami-3.jpeg',
-      '/assets/krishnashtami-5.jpeg'
+      '/assets/krishnashtami-5.jpeg',
+      '/assets/krishnashtami-7.jpeg',
+      '/assets/krishnashtami-8.jpeg'
     ]
   },
   {
