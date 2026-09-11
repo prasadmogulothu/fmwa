@@ -45,7 +45,7 @@ export default function Home() {
             <em>Welfare Association</em>
           </h1>
           <p className="a-hero-p">
-            Formed in 2017 by the residents of the colony, and run since then by an elected
+            Formed in 2018 by the plot owners of the colony, and run since then by an elected
             committee.
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function Home() {
 
       <section className="a-about">
         <div className="a-about-t">
-          <h2>About the association</h2>
+          <h2>About the Association</h2>
           <p>
             Fortune Meadows Welfare Association was registered on February 6, 2018, when the first residents
             elected <b>K. V. Rajasekhar</b> as president and formed an executive committee alongside him.

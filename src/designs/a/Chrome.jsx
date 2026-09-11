@@ -72,7 +72,7 @@ export function Foot() {
         <b>FMWA &copy; 2026</b>
         <small>Fortune Meadows Welfare Association. All rights reserved.</small>
       </div>
-      <a className="pb" href="https://hhappsolutions.com" target="_blank" rel="noopener noreferrer">
+      <a className="pb" href="#">
         <span className="pb-t">
           <span>Powered by</span>
           <b>HHAppSolutions</b>

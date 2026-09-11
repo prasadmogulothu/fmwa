@@ -66,10 +66,7 @@ export default function Home() {
       </section>
 
       <section className="b-about">
-        <blockquote>
-          Nobody here celebrates alone. The gate gets a flag, the plot gets an uri, and the
-          pandal gets nine days.
-        </blockquote>
+        <h2>About the Association</h2>
         <div className="b-about-t">
           <p>
             Fortune Meadows Welfare Association was registered and started on <b>February 6, 2018</b> by the residents of the
