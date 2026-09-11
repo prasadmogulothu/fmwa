@@ -109,7 +109,7 @@ values
   ('ganesh-chaturthi', 'Ganesh Chaturthi', 'వినాయక చవితి', 'Bhadrapada masam',
    'Nine days at the colony pandal',
    'Vinayaka is installed at the pandal on the first morning and stays nine days. Pooja twice a day, cultural evenings for the children, and an eco-friendly nimajjanam to close.',
-   '#b8862b', '/assets/ganesh-1.jpeg', '/assets/thumb-ganesh-chaturthi.png', 3)
+   '#b8862b', '/assets/ganesha-1.jpeg', '/assets/thumb-ganesh-chaturthi.png', 3)
 on conflict (slug) do nothing;
 
 -- ============================ STEP 3 ============================

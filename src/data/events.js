@@ -41,7 +41,8 @@ export const EVENTS = [
       '/assets/krishnashtami-2.jpeg',
       '/assets/krishnashtami-1.jpeg',
       '/assets/krishnashtami-4.jpeg',
-      '/assets/krishnashtami-3.jpeg'
+      '/assets/krishnashtami-3.jpeg',
+      '/assets/krishnashtami-5.jpeg'
     ]
   },
   {
@@ -54,8 +55,8 @@ export const EVENTS = [
     blurb:
       'Vinayaka is installed at the pandal on the first morning and stays nine days. Pooja twice a day, cultural evenings for the children, and an eco-friendly nimajjanam to close.',
     accent: '#B8862B',
-    cover: '/assets/ganesh-1.jpeg',
-    photos: ['/assets/ganesh-1.jpeg']
+    cover: '/assets/ganesha-1.jpeg',
+    photos: ['/assets/ganesha-1.jpeg', '/assets/ganesha-2.jpeg', '/assets/ganesha-3.jpeg']
   }
 ];
 
