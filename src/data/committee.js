@@ -67,8 +67,8 @@ export const FEST = {
     'A Praveen',
     'Vasu',
     'Sandeep',
-    'Sudhakar',
-    'Hari'
+    'Hari',
+    'Sudhakar'
   ],
   leftEnd:
     'This list is *only illustrative and is not exclusive*. Any resident who wishes to voluntarily participate, contribute their time, ideas, or financial support is *most welcome*. The intention is to bring everyone together and make our celebrations joyful, meaningful and memorable.',
