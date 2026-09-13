@@ -41,3 +41,50 @@ export const BODIES = [
     ]
   }
 ];
+
+// Festival committee note, straight from FortuneMeadowsFestivalCommittee.md.
+// *starred* runs render bold — see Rich() in designs/a/Home.jsx.
+export const FEST = {
+  intro: [
+    '*Dear Fortune Meadows Residents,*',
+    'As decided by the *elders of Fortune Meadows Colony*, a committee has been formed for coordinating and celebrating the festivals in our community for the coming *one year, starting from Vinayaka Chavithi*.'
+  ],
+  left: [
+    'The committee will be known as:',
+    '*🌺 FORTUNE MEADOWS FESTIVAL COMMITTEE 🌺*',
+    '*Proposed Committee Members:*'
+  ],
+  members: [
+    'Santosh — Lead the committee',
+    'Giri',
+    'Ramu',
+    'Raju',
+    'Karthik',
+    'Thrinath',
+    'Rajesh',
+    'Shiva',
+    'Naveen',
+    'A Praveen',
+    'Vasu',
+    'Sandeep',
+    'Sudhakar',
+    'Hari'
+  ],
+  leftEnd:
+    'This list is *only illustrative and is not exclusive*. Any resident who wishes to voluntarily participate, contribute their time, ideas, or financial support is *most welcome*. The intention is to bring everyone together and make our celebrations joyful, meaningful and memorable.',
+  rightHead: '🙏 *Ganesh Chanda Contribution*',
+  right: [
+    'We kindly request all residents to voluntarily contribute towards the Ganesh Chanda and extend your support for the successful celebration. Google pay, Phone pay, Paytm numbers'
+  ],
+  phones: [
+    ['Raju', '9000928634'],
+    ['Giri', '7848868836']
+  ],
+  rest: [
+    'Every contribution, big or small, will be greatly appreciated and will help us make the celebrations grand, joyful and memorable. 🙏',
+    'We sincerely request *all residents to extend their cooperation and support* so that we can successfully conduct the festivals and make them a *grand success with the participation of our entire Fortune Meadows family.*❤️',
+    'We will keep everyone informed about the *day-to-day activities, pooja timings, cultural programmes, arrangements and other events* from time to time through the our whatsapp group.',
+    'Let us all come together, participate with enthusiasm and make every celebration a beautiful and memorable occasion for *Fortune Meadows!* 🎉🌸🙏'
+  ],
+  sign: ['*With warm regards,*', '*Fortune Meadows Festival Committee*', '*Togetherness • Tradition • Celebration • Community*']
+};

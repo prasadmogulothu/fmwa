@@ -3,6 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AHome from './designs/a/Home.jsx';
 import AEvent from './designs/a/Event.jsx';
+import AAbout from './designs/a/About.jsx';
+import ANews from './designs/a/News.jsx';
 import BHome from './designs/b/Home.jsx';
 import BEvent from './designs/b/Event.jsx';
 import './base.css';
@@ -27,6 +29,8 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<AHome />} />
         <Route path="/event/:slug" element={<AEvent />} />
+        <Route path="/aboutus" element={<AAbout />} />
+        <Route path="/news" element={<ANews />} />
         <Route path="/b" element={<BHome />} />
         <Route path="/b/event/:slug" element={<BEvent />} />
         <Route path="*" element={<Navigate to="/" replace />} />

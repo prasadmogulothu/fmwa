@@ -1,41 +1,20 @@
 import { Link } from 'react-router-dom';
 import { useEvents } from '../../data/events.js';
-import { BODIES } from '../../data/committee.js';
+import { FEST } from '../../data/committee.js';
 import { Head, Foot } from './Chrome.jsx';
 
-function ElectedBody({ year, note, office, members }) {
-  return (
-    <div className="a-term">
-      <div className="a-body-h">
-        <h2>{year} Elected Body</h2>
-        {note && <p>{note}</p>}
-      </div>
-      <dl className="a-office">
-        {office.map(([role, name]) => (
-          <div key={role}>
-            <dt>{role}</dt>
-            <dd>{name}</dd>
-          </div>
-        ))}
-      </dl>
-      <div className="a-exec">
-        <h3>Executive members</h3>
-        <ul>
-          {members.map((m) => (
-            <li key={m}>{m}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
-}
+// The committee note is stored as plain text with *starred* runs, the way it
+// was written in WhatsApp. Odd split pieces are the ones inside a * pair.
+const Rich = ({ t }) => (
+  <>{t.split('*').map((piece, i) => (i % 2 ? <b key={i}>{piece}</b> : piece))}</>
+);
 
 export default function Home() {
   const { events } = useEvents();
 
   return (
     <div className="a">
-      <Head home />
+      <Head />
 
       <section className="a-hero">
         <img src="/assets/banner.png" alt="The main gate of Fortune Meadows" />
@@ -72,36 +51,101 @@ export default function Home() {
         <div className="a-about-t">
           <h2>About the Association</h2>
           <p>
-            Fortune Meadows Welfare Association was registered on February 6, 2018, when the first residents
-            elected <b>K. V. Rajasekhar</b> as president and formed an executive committee alongside him.
+            Fortune Meadows Welfare Association was registered on February 6, 2018, when the first
+            residents elected <b>K. V. Rajasekhar</b> as president and formed an executive committee
+            alongside him.
           </p>
           <p>
-            The committee handles the everyday running of the colony — water, security, the
-            common areas, the park — and puts together the festivals the whole colony turns out
-            for.
+            The committee handles the everyday running of the colony — water, security, the common
+            areas, the park — and puts together the festivals the whole colony turns out for.
           </p>
+          <Link className="a-more" to="/aboutus">
+            View details
+          </Link>
         </div>
-        <dl className="a-plate">
-          <div>
-            <dt>Formed</dt>
-            <dd>2018</dd>
-          </div>
-          <div>
-            <dt>Founding president</dt>
-            <dd>K. V. Rajasekhar</dd>
-          </div>
-          <div>
-            <dt>Run by</dt>
-            <dd>Elected executive committee</dd>
-          </div>
-        </dl>
+        <div className="a-about-r">
+          {/* ponytail: no destination yet — deliberately inert until there is
+              a present event to point it at. */}
+          <button className="a-present" type="button">
+            Present Event Details
+          </button>
+          <dl className="a-plate">
+            <div>
+              <dt>Formed</dt>
+              <dd>2018</dd>
+            </div>
+            <div>
+              <dt>Founding president</dt>
+              <dd>K. V. Rajasekhar</dd>
+            </div>
+            <div>
+              <dt>Run by</dt>
+              <dd>Elected executive committee</dd>
+            </div>
+          </dl>
+        </div>
       </section>
 
+      <section className="a-fc">
+        <div className="a-fc-in">
+          <div className="a-fc-h">
+            <h2>Fortune Meadows Festival Committee</h2>
+            {FEST.intro.map((t) => (
+              <p key={t}>
+                <Rich t={t} />
+              </p>
+            ))}
+          </div>
 
-      <section className="a-body">
-        {BODIES.map((b) => (
-          <ElectedBody key={b.year} {...b} />
-        ))}
+          <div className="a-fc-cols">
+            <div className="a-fc-col">
+              {FEST.left.map((t) => (
+                <p key={t}>
+                  <Rich t={t} />
+                </p>
+              ))}
+              <ol className="a-fc-mem">
+                {FEST.members.map((m) => (
+                  <li key={m}>{m}</li>
+                ))}
+              </ol>
+              <p>
+                <Rich t={FEST.leftEnd} />
+              </p>
+            </div>
+
+            <div className="a-fc-col">
+              <h3>
+                <Rich t={FEST.rightHead} />
+              </h3>
+              {FEST.right.map((t) => (
+                <p key={t}>
+                  <Rich t={t} />
+                </p>
+              ))}
+              <ul className="a-fc-ph">
+                {FEST.phones.map(([who, num]) => (
+                  <li key={num}>
+                    <span>📞 {who}</span>
+                    <a href={`tel:${num}`}>{num}</a>
+                  </li>
+                ))}
+              </ul>
+              {FEST.rest.map((t) => (
+                <p key={t}>
+                  <Rich t={t} />
+                </p>
+              ))}
+              <p className="a-fc-sign">
+                {FEST.sign.map((t) => (
+                  <span key={t}>
+                    <Rich t={t} />
+                  </span>
+                ))}
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="a-fest" id="festivals">

@@ -43,23 +43,41 @@
   color: var(--paper);
   background: linear-gradient(180deg, rgba(20, 14, 9, 0.62), rgba(20, 14, 9, 0));
 }
-/* ponytail: temporary background preview switch, delete with the markup */
-.a-bgs { display: flex; gap: 4px; }
-.a-bgs button {
-  font: inherit;
-  font-size: 11.5px;
-  letter-spacing: 0.06em;
-  color: inherit;
-  padding: 7px 10px;
-  border: 1px solid rgba(251, 246, 236, 0.4);
+/* theme switch: two colour boxes, the chosen one ringed */
+.a-theme {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  border: 1px solid rgba(251, 246, 236, 0.35);
   border-radius: 999px;
   background: rgba(24, 17, 10, 0.32);
   backdrop-filter: blur(6px);
+}
+.a-theme button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid rgba(251, 246, 236, 0.45);
+  border-radius: 50%;
   cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.a-theme button:hover { transform: scale(1.08); }
+.a-theme button[aria-pressed='true'] { box-shadow: 0 0 0 2px var(--paper); }
+
+.a-nav {
+  color: inherit;
+  font-size: 13.5px;
+  text-decoration: none;
+  padding: 9px 14px;
+  border: 1px solid rgba(251, 246, 236, 0.45);
+  border-radius: 999px;
+  white-space: nowrap;
+  background: rgba(24, 17, 10, 0.32);
+  backdrop-filter: blur(6px);
   transition: background 0.2s, color 0.2s;
 }
-.a-bgs button:hover { background: rgba(251, 246, 236, 0.22); }
-.a-bgs button[aria-pressed='true'] { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.a-nav:hover { background: var(--paper); color: var(--ink); }
 
 .a-home {
   display: grid;
@@ -107,19 +125,6 @@
   opacity: 0.75;
 }
 .a-headr { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-.a-allf { color: inherit; font-size: 14px; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
-.a-swap {
-  text-decoration: none;
-  color: inherit;
-  font-size: 13.5px;
-  padding: 9px 16px;
-  border: 1px solid rgba(251, 246, 236, 0.55);
-  border-radius: 999px;
-  white-space: nowrap;
-  backdrop-filter: blur(6px);
-  transition: background 0.2s, color 0.2s;
-}
-.a-swap:hover { background: var(--paper); color: var(--ink); }
 
 /* hero */
 .a-hero {
@@ -228,7 +233,23 @@
 .a-about p { max-width: 58ch; }
 .a-about p + p { margin-top: 14px; }
 .a-about b { font-weight: 700; box-shadow: inset 0 -0.42em 0 rgba(194, 84, 42, 0.22); }
-.a-plate { margin: 8px 0 0; border-top: 1px solid var(--line); }
+.a-about-r { display: grid; justify-items: end; }
+.a-present {
+  font: inherit;
+  font-size: 13.5px;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+  background: var(--terra);
+  border: 1px solid var(--terra);
+  border-radius: 999px;
+  padding: 10px 20px;
+  margin-bottom: 22px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.a-present:hover { background: var(--ink); border-color: var(--ink); }
+
+.a-plate { margin: 8px 0 0; width: 100%; border-top: 1px solid var(--line); }
 .a-plate div {
   display: flex;
   justify-content: space-between;
@@ -244,6 +265,109 @@
   font-size: 21px;
   text-align: right;
 }
+
+.a-more {
+  display: inline-block;
+  margin-top: 20px;
+  color: var(--terra);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 3px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.a-more:hover { color: var(--ink); }
+.a-more::after { content: ' →'; }
+
+/* festival committee */
+.a-fc {
+  /* its own band, a shade deeper than the page, so the committee note reads as
+     a section in its own right between About and the festivals */
+  background: #e9dcc1;
+}
+/* the inner box carries the width and gutters, so the copy lines up with the
+   About section above it */
+.a-fc-in {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding: clamp(30px, 3.6vw, 48px) clamp(16px, 4vw, 48px) clamp(40px, 5vw, 66px);
+}
+.a-fc-h { margin-bottom: clamp(20px, 2.6vw, 30px); }
+.a-fc-h h2 { font-size: clamp(28px, 4.2vw, 46px); color: var(--maroon, var(--terra)); margin-bottom: 16px; }
+.a-fc-h p { max-width: 74ch; }
+.a-fc-h p + p { margin-top: 12px; }
+.a-fc-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+/* the vertical separator asked for — one rule on the second column */
+.a-fc-col + .a-fc-col {
+  border-left: 1px solid rgba(36, 27, 18, 0.22);
+  padding-left: clamp(24px, 4vw, 56px);
+}
+.a-fc-col p + p { margin-top: 12px; }
+.a-fc-col h3 { font-size: clamp(21px, 2.4vw, 28px); margin-bottom: 14px; }
+.a-fc b { font-weight: 700; }
+.a-fc-mem {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 8px;
+  counter-reset: fcm;
+}
+.a-fc-mem li {
+  counter-increment: fcm;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--terra);
+  padding: 9px 15px;
+  font-size: 15px;
+}
+.a-fc-mem li::before { content: counter(fcm) ') '; color: var(--dim); }
+.a-fc-ph {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.a-fc-ph li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 11px 16px;
+}
+.a-fc-ph a {
+  color: var(--ink);
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 21px;
+  text-decoration: none;
+}
+.a-fc-ph a:hover { color: var(--terra); }
+.a-fc-sign { margin-top: 20px; display: grid; gap: 2px; font-style: italic; color: var(--dim); }
+
+/* news — nothing published yet */
+.a-empty {
+  /* nothing to show yet, so hold the page open to the footer */
+  min-height: 46vh;
+  max-width: 1320px;
+  margin-inline: auto;
+  padding: clamp(50px, 8vw, 110px) clamp(16px, 4vw, 48px);
+  color: var(--dim);
+  font-style: italic;
+}
+
+/* about page */
+.a-eh-solo { grid-template-columns: minmax(0, 1fr); }
 
 /* elected body */
 .a-body {
@@ -446,6 +570,13 @@
 
 @media (max-width: 900px) {
   .a-about { grid-template-columns: 1fr; }
+  .a-fc-cols { grid-template-columns: 1fr; }
+  .a-fc-col + .a-fc-col {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding-left: 0;
+    padding-top: clamp(24px, 4vw, 36px);
+  }
   .a-cards { grid-template-columns: 1fr; }
   .a-cards > :nth-child(2), .a-cards > :nth-child(3) { margin-top: 0; }
   .a-eh { grid-template-columns: 1fr; }
@@ -467,8 +598,7 @@
     padding-bottom: 10px;
   }
 
-  .a-head .a-swap,
-  .a-bgs button,
+  .a-head .a-nav,
   .a-home {
     color: var(--ink);
     background: none;
@@ -476,18 +606,20 @@
     backdrop-filter: none;
   }
 
-  .a-head .a-swap:hover,
-  .a-bgs button:hover,
+  .a-head .a-nav:hover,
   .a-home:hover {
     background: var(--ink);
     color: var(--paper);
   }
 
-  .a-bgs button[aria-pressed='true'] {
-    background: var(--ink);
-    color: var(--paper);
-    border-color: var(--ink);
+  .a-theme {
+    background: none;
+    border-color: rgba(36, 27, 18, 0.32);
+    backdrop-filter: none;
   }
+
+  .a-theme button { border-color: rgba(36, 27, 18, 0.32); }
+  .a-theme button[aria-pressed='true'] { box-shadow: 0 0 0 2px var(--ink); }
 
   .a-hero {
     display: flex;
@@ -539,14 +671,13 @@
 }
 @media (max-width: 620px) {
   .a { font-size: 16px; }
-  .a-allf { display: none; }
   /* the wordmark and the controls will not share one row at this width */
   .a-head { flex-wrap: wrap; row-gap: 10px; padding-top: 12px; }
   .a-mark { flex: 1 1 100%; }
   .a-mark-t b { font-size: 21px; }
   .a-logo { width: 40px; height: 40px; border-radius: 11px; }
   .a-headr { width: 100%; margin-left: 0; justify-content: flex-start; }
-  .a-bgs button { padding: 6px 8px; font-size: 11px; }
+  .a-nav { padding: 7px 12px; font-size: 12.5px; }
   .a-next { grid-template-columns: 1fr; }
   .a-mark-t i { display: none; }
 }
@@ -555,6 +686,7 @@
    above were for laptop, desktop and tablet only. */
 @media (max-width: 620px) {
   .a-about { padding-top: 46px; padding-bottom: 46px; }
+  .a-fc-in { padding-top: 46px; padding-bottom: 48px; }
   .a-body { padding-bottom: 48px; }
   .a-body-h { padding-top: 24px; }
   .a-term + .a-term { margin-top: 30px; }

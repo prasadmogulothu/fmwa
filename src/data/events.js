@@ -72,8 +72,13 @@ export const getEvent = (slug) => EVENTS.find((e) => e.slug === slug);
 let live = null;
 let pending = null;
 
+// Both the seed above and the Supabase rows are stored oldest-first (the
+// committee's own `sort`); every screen shows them newest-first, so the one
+// funnel every screen reads through flips them here.
+const desc = (r) => r.slice().reverse();
+
 export function useEvents() {
-  const [rows, setRows] = useState(live || EVENTS);
+  const [rows, setRows] = useState(() => desc(live || EVENTS));
   const [ready, setReady] = useState(Boolean(live));
   useEffect(() => {
     if (live) return;
@@ -87,7 +92,7 @@ export function useEvents() {
         return seed && !e.photos.length ? { ...e, photos: seed.photos, cover: e.cover || seed.cover } : e;
       });
       if (alive) {
-        if (live) setRows(live);
+        if (live) setRows(desc(live));
         setReady(true);
       }
     });
