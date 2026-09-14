@@ -32,6 +32,36 @@ async function call(token, method, body, query = '') {
 const roleLabel = (r) =>
   r === ADMIN ? 'Administrator' : r === COMMITTEE ? 'Festival committee' : r;
 
+// Display only. Every account here is @fortunemeadows.local — api/users.js
+// filters the list to that domain — so the domain is noise on screen. The
+// full address is still what goes to and comes from the API.
+const nameOf = (email) => String(email || '').split('@')[0];
+
+// type="button" is load-bearing: inside the create form a bare button
+// defaults to submit and would post the form on every peek.
+function PasswordField({ value, onChange, ...rest }) {
+  const [shown, setShown] = useState(false);
+  return (
+    <span className="ad-pw">
+      <input
+        type={shown ? 'text' : 'password'}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        {...rest}
+      />
+      <button
+        type="button"
+        className="ad-eye"
+        aria-label={shown ? 'Hide password' : 'Show password'}
+        aria-pressed={shown}
+        onClick={() => setShown((s) => !s)}
+      >
+        {shown ? '🙈' : '👁'}
+      </button>
+    </span>
+  );
+}
+
 function Assignments({ user, events, onError }) {
   const [mine, setMine] = useState([]);
 
@@ -91,6 +121,9 @@ export default function Users() {
   const [err, setErr] = useState('');
   const [ok, setOk] = useState('');
   const [loaded, setLoaded] = useState(false);
+  // The id of the one row whose reset form is open, plus its field.
+  const [resetting, setResetting] = useState('');
+  const [newPassword, setNewPassword] = useState('');
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -125,7 +158,7 @@ export default function Users() {
     const email = local + DOMAIN;
     try {
       const made = await call(token, 'POST', { email, password, role });
-      setOk(`${email} created.`);
+      setOk(`${local} created.`);
       // If GoTrue ignored the role on create, the account exists but has no
       // access — say so now rather than letting them find out at sign-in.
       if (made?.role !== role) {
@@ -141,11 +174,32 @@ export default function Users() {
   }
 
   async function drop(id, email) {
-    if (!window.confirm(`Delete ${email}? This cannot be undone.`)) return;
+    if (!window.confirm(`Delete ${nameOf(email)}? This cannot be undone.`)) return;
     setErr('');
     try {
       await call(token, 'DELETE', null, `?id=${encodeURIComponent(id)}`);
       load();
+    } catch (error) {
+      setErr(error.message);
+    }
+  }
+
+  function openReset(id) {
+    setErr('');
+    setOk('');
+    setNewPassword('');
+    setResetting((open) => (open === id ? '' : id));
+  }
+
+  async function reset(e, user) {
+    e.preventDefault();
+    setErr('');
+    setOk('');
+    try {
+      await call(token, 'PATCH', { id: user.id, password: newPassword });
+      setNewPassword('');
+      setResetting('');
+      setOk(`Password for ${nameOf(user.email)} changed.`);
     } catch (error) {
       setErr(error.message);
     }
@@ -172,13 +226,7 @@ export default function Users() {
         </label>
         <label>
           Password
-          <input
-            type="password"
-            value={password}
-            required
-            minLength={8}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <PasswordField value={password} onChange={setPassword} required minLength={8} />
         </label>
         <label>
           Role
@@ -196,14 +244,34 @@ export default function Users() {
       {(Array.isArray(users) ? users : []).map((u) => (
         <section className="ad-day" key={u.id}>
           <div className="ad-row">
-            <b>{u.email}</b>
+            <b>{nameOf(u.email)}</b>
             <span className="ad-dim">{roleLabel(u.role)}</span>
+            <button type="button" className="ad-ghost" onClick={() => openReset(u.id)}>
+              Reset password
+            </button>
             {u.id !== userId && (
               <button type="button" className="ad-ghost" onClick={() => drop(u.id, u.email)}>
                 Delete
               </button>
             )}
           </div>
+          {resetting === u.id && (
+            <form className="ad-grid" onSubmit={(e) => reset(e, u)}>
+              <label>
+                New password
+                <PasswordField
+                  value={newPassword}
+                  onChange={setNewPassword}
+                  required
+                  minLength={8}
+                />
+              </label>
+              <button type="submit">Save</button>
+              <button type="button" className="ad-ghost" onClick={() => setResetting('')}>
+                Cancel
+              </button>
+            </form>
+          )}
           {u.role === COMMITTEE && <Assignments user={u} events={events} onError={setErr} />}
         </section>
       ))}

@@ -33,6 +33,11 @@ export default function EventList() {
           <span className={e.timetable_published ? 'ad-ok' : 'ad-err'}>
             {e.timetable_published ? 'Published' : 'Draft'}
           </span>
+          {/* A Link, not a button with navigate(), so middle-click and
+              open-in-new-tab still work. */}
+          <Link className="ad-ghost ad-btn" to={`/admin/event/${e.id}`}>
+            Manage
+          </Link>
         </div>
       ))}
     </>

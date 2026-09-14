@@ -10,7 +10,11 @@
   background: #f6f2ea;
   min-height: 100dvh;
 }
-.ad-login { display: grid; place-items: center; padding: 24px; }
+.ad-login {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
 .ad-card {
   background: #fff;
   border: 1px solid var(--ad-line);
@@ -20,9 +24,21 @@
   display: grid;
   gap: 14px;
 }
-.ad-card h1 { font-size: 22px; margin: 0; }
-.ad-card > p { margin: 0; color: var(--ad-dim); font-size: 14px; }
-.ad-card label { display: grid; gap: 6px; font-size: 13px; color: var(--ad-dim); }
+.ad-card h1 {
+  font-size: 22px;
+  margin: 0;
+}
+.ad-card > p {
+  margin: 0;
+  color: var(--ad-dim);
+  font-size: 14px;
+}
+.ad-card label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ad-dim);
+}
 .ad input,
 .ad-card input,
 .ad select,
@@ -46,10 +62,25 @@
   color: #fff;
   cursor: pointer;
 }
-.ad button[disabled] { opacity: 0.55; cursor: default; }
-.ad .ad-ghost { background: none; color: var(--ad-ink); border-color: var(--ad-line); }
-.ad-err { color: #a3281b; font-size: 13.5px; margin: 0; }
-.ad-ok { color: #1d6b45; font-size: 13.5px; margin: 0; }
+.ad button[disabled] {
+  opacity: 0.55;
+  cursor: default;
+}
+.ad .ad-ghost {
+  background: none;
+  color: var(--ad-ink);
+  border-color: var(--ad-line);
+}
+.ad-err {
+  color: #a3281b;
+  font-size: 13.5px;
+  margin: 0;
+}
+.ad-ok {
+  color: #1d6b45;
+  font-size: 13.5px;
+  margin: 0;
+}
 
 .ad-head {
   display: flex;
@@ -60,11 +91,29 @@
   border-bottom: 1px solid var(--ad-line);
   background: #fff;
 }
-.ad-head nav { display: flex; gap: 14px; }
-.ad-head a { color: var(--ad-ink); font-size: 14px; }
-.ad-who { margin-left: auto; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ad-dim); }
-.ad-main { padding: clamp(18px, 3vw, 32px); max-width: 1100px; }
-.ad-main h2 { font-size: 20px; margin: 0 0 14px; }
+.ad-head nav {
+  display: flex;
+  gap: 14px;
+}
+.ad-head a {
+  color: var(--ad-ink);
+  font-size: 14px;
+}
+.ad-who {
+  margin-left: auto;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ad-dim);
+}
+.ad-main {
+  padding: clamp(18px, 3vw, 32px);
+  max-width: 1100px;
+}
+.ad-main h2 {
+  font-size: 20px;
+  margin: 0 0 14px;
+}
 .ad-row {
   display: flex;
   gap: 12px;
@@ -73,8 +122,19 @@
   padding: 12px 0;
   border-bottom: 1px solid var(--ad-line);
 }
-.ad-grid { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin: 16px 0; }
-.ad-grid label { display: grid; gap: 5px; font-size: 12px; color: var(--ad-dim); }
+.ad-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin: 16px 0;
+}
+.ad-grid label {
+  display: grid;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--ad-dim);
+}
 
 .ad-day {
   border: 1px solid var(--ad-line);
@@ -83,8 +143,13 @@
   padding: 6px 16px 16px;
   margin-bottom: 16px;
 }
-.ad-day .ad-row:last-of-type { border-bottom: 0; }
-.ad-dim { color: var(--ad-dim); font-size: 13.5px; }
+.ad-day .ad-row:last-of-type {
+  border-bottom: 0;
+}
+.ad-dim {
+  color: var(--ad-dim);
+  font-size: 13.5px;
+}
 
 .ad-check {
   display: flex;
@@ -94,4 +159,33 @@
   font-size: 14px;
   color: var(--ad-ink);
 }
-.ad-check input { width: auto; }
+.ad-check input {
+  width: auto;
+}
+
+/* A Link dressed as a ghost button, so Manage keeps real anchor behaviour. */
+.ad a.ad-btn {
+  margin-left: auto;
+  font-size: 14px;
+  padding: 8px 16px;
+  border: 1px solid var(--ad-line);
+  border-radius: 7px;
+  text-decoration: none;
+}
+
+.ad-pw {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.ad-pw input {
+  flex: 1;
+  min-width: 0;
+}
+.ad .ad-eye {
+  background: none;
+  border-color: var(--ad-line);
+  color: var(--ad-dim);
+  padding: 8px 10px;
+  line-height: 1;
+}
