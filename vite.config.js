@@ -11,7 +11,9 @@ export default defineConfig({
       workbox: {
         // banner.png is ~2.6MB; raise the precache limit so it works offline
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-        globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,woff2}']
+        globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,woff2}'],
+        // Admin chunk carries supabase-js; never precache it for public visitors.
+        globIgnores: ['**/Admin-*.js', '**/Admin-*.css']
       },
       manifest: {
         name: 'Fortune Meadows Welfare Association',

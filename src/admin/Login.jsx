@@ -11,11 +11,15 @@ export default function Login() {
     e.preventDefault();
     setBusy(true);
     setErr('');
-    const { error } = await signIn(email.trim(), password);
+    try {
+      const { error } = await signIn(email.trim(), password);
+      // Deliberately vague: a precise message tells an attacker which half was
+      // right. The committee only ever has one account each anyway.
+      if (error) setErr('That email and password did not match.');
+    } catch {
+      setErr('That email and password did not match.');
+    }
     setBusy(false);
-    // Deliberately vague: a precise message tells an attacker which half was
-    // right. The committee only ever has one account each anyway.
-    if (error) setErr('That email and password did not match.');
   }
 
   return (

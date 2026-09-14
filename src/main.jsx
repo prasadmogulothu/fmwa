@@ -37,7 +37,7 @@ createRoot(document.getElementById('root')).render(
         <Route
           path="/admin/*"
           element={
-            <Suspense fallback={null}>
+            <Suspense fallback={<div className="ad-login">Loading…</div>}>
               <Admin />
             </Suspense>
           }

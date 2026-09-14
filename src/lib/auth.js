@@ -30,10 +30,13 @@ export function useSession() {
   const [session, setSession] = useState(null);
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    sb.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setReady(true);
-    });
+    sb.auth
+      .getSession()
+      .then(({ data }) => {
+        setSession(data.session);
+        setReady(true);
+      })
+      .catch(() => setReady(true));
     const { data } = sb.auth.onAuthStateChange((_e, s) => setSession(s));
     return () => data.subscription.unsubscribe();
   }, []);
