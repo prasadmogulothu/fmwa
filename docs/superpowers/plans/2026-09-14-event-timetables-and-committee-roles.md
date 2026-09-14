@@ -266,7 +266,7 @@ curl -s -X PATCH "$SB/rest/v1/fmwa_events?slug=eq.ganesh-chaturthi" \
   -H 'Content-Type: application/json' -d '{"title":"hacked"}'
 ```
 
-Expected: the first returns only rows for Ganesh Chaturthi; the second returns a `42501` permission-denied error mentioning column `title`.
+Expected: the first returns only rows for Ganesh Chaturthi; the second returns a `42501` error, `permission denied for table fmwa_events` (Postgres does not name the column in column-privilege failures).
 
 - [ ] **Step 6: Update the README**
 

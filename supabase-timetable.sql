@@ -22,8 +22,6 @@ create table if not exists public.fmwa_event_days (
   label      text,
   unique (event_id, date)
 );
-create index if not exists fmwa_event_days_event_idx
-  on public.fmwa_event_days (event_id, date);
 
 create table if not exists public.fmwa_programs (
   id         bigint generated always as identity primary key,
@@ -54,6 +52,7 @@ do $$ begin
 end $$;
 grant fmwa_committee to authenticator;
 grant usage on schema public to fmwa_committee;
+grant usage on schema auth to fmwa_committee;
 
 grant select on public.fmwa_events to fmwa_committee;
 -- Column-level: a committee user can flip publish and cannot write the title,
@@ -83,7 +82,7 @@ drop policy if exists fmwa_days_public_read on public.fmwa_event_days;
 create policy fmwa_days_public_read on public.fmwa_event_days
   for select to anon
   using (exists (select 1 from public.fmwa_events e
-                  where e.id = event_id and e.timetable_published));
+                  where e.id = fmwa_event_days.event_id and e.timetable_published));
 
 drop policy if exists fmwa_programs_public_read on public.fmwa_programs;
 create policy fmwa_programs_public_read on public.fmwa_programs
@@ -91,7 +90,7 @@ create policy fmwa_programs_public_read on public.fmwa_programs
   using (exists (select 1
                    from public.fmwa_event_days d
                    join public.fmwa_events e on e.id = d.event_id
-                  where d.id = day_id and e.timetable_published));
+                  where d.id = fmwa_programs.day_id and e.timetable_published));
 
 -- admin: everything
 drop policy if exists fmwa_days_admin_all on public.fmwa_event_days;
