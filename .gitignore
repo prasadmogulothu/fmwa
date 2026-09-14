@@ -4,3 +4,8 @@ dist
 *.zip
 
 .vercel
+
+.superpowers
+.env
+.env.local
+.env.*.local
