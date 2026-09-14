@@ -11,6 +11,7 @@ export const sb = createClient(SB.url, SB.key, {
 
 export const ADMIN = 'fmwa_admin';
 export const COMMITTEE = 'fmwa_committee';
+export const DOMAIN = '@fortunemeadows.local';
 
 // The Postgres role PostgREST switches into lives in the JWT's `role` claim,
 // and that same claim is what RLS keys off. Read it from the token rather than

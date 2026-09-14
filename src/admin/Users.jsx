@@ -1,12 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ADMIN, COMMITTEE, sb, useSession } from '../lib/auth.js';
+import { ADMIN, COMMITTEE, DOMAIN, sb, useSession } from '../lib/auth.js';
 import { listEvents } from '../data/timetable.js';
-
-// Admins type only the local part of the address (e.g. "giri"); this suffix
-// is appended before the request ever leaves the browser. It is a UI
-// convenience only — api/users.js validates the complete assembled address
-// itself and is the real security boundary, not this constant.
-const DOMAIN = '@fortunemeadows.local';
 
 async function call(token, method, body, query = '') {
   const r = await fetch(`/api/users${query}`, {
