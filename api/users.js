@@ -81,8 +81,8 @@ export default async function handler(req, res) {
     if (!ours(email)) {
       return res.status(400).json({ error: `Accounts can only be created at ${SITE}.` });
     }
-    if (typeof password !== 'string' || password.length < 10) {
-      return res.status(400).json({ error: 'Password must be at least 10 characters.' });
+    if (typeof password !== 'string' || password.length < 8) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters.' });
     }
     if (!ROLES.includes(role)) {
       return res.status(400).json({ error: 'Unknown role.' });

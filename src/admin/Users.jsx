@@ -176,7 +176,7 @@ export default function Users() {
             type="password"
             value={password}
             required
-            minLength={10}
+            minLength={8}
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
