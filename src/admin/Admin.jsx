@@ -1,6 +1,8 @@
 import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import { ADMIN, COMMITTEE, signOut, useSession } from '../lib/auth.js';
 import Login from './Login.jsx';
+import EventList from './EventList.jsx';
+import Timetable from './Timetable.jsx';
 import './style.css';
 
 export default function Admin() {
@@ -41,7 +43,8 @@ export default function Admin() {
 
       <main className="ad-main">
         <Routes>
-          <Route index element={<p>Event list arrives in Task 5.</p>} />
+          <Route index element={<EventList />} />
+          <Route path="event/:id" element={<Timetable />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>
       </main>

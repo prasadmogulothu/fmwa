@@ -75,3 +75,13 @@
 }
 .ad-grid { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin: 16px 0; }
 .ad-grid label { display: grid; gap: 5px; font-size: 12px; color: var(--ad-dim); }
+
+.ad-day {
+  border: 1px solid var(--ad-line);
+  border-radius: 9px;
+  background: #fff;
+  padding: 6px 16px 16px;
+  margin-bottom: 16px;
+}
+.ad-day .ad-row:last-of-type { border-bottom: 0; }
+.ad-dim { color: var(--ad-dim); font-size: 13.5px; }
