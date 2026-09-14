@@ -4,6 +4,7 @@ import Login from './Login.jsx';
 import EventList from './EventList.jsx';
 import Timetable from './Timetable.jsx';
 import Users from './Users.jsx';
+import Password from './Password.jsx';
 import './style.css';
 
 export default function Admin() {
@@ -34,6 +35,7 @@ export default function Admin() {
         <nav>
           <Link to="/admin">Events</Link>
           {role === ADMIN && <Link to="/admin/users">Users</Link>}
+          <Link to="/admin/password">Change password</Link>
           <a href="/">View site</a>
         </nav>
         <span className="ad-who">{role === ADMIN ? 'Administrator' : 'Festival committee'}</span>
@@ -50,6 +52,7 @@ export default function Admin() {
             path="users"
             element={role === ADMIN ? <Users /> : <Navigate to="/admin" replace />}
           />
+          <Route path="password" element={<Password />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>
       </main>

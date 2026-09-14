@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ADMIN, COMMITTEE, DOMAIN, sb, useSession } from '../lib/auth.js';
 import { listEvents } from '../data/timetable.js';
+import PasswordField from './PasswordField.jsx';
 
 async function call(token, method, body, query = '') {
   const r = await fetch(`/api/users${query}`, {
@@ -36,31 +37,6 @@ const roleLabel = (r) =>
 // filters the list to that domain — so the domain is noise on screen. The
 // full address is still what goes to and comes from the API.
 const nameOf = (email) => String(email || '').split('@')[0];
-
-// type="button" is load-bearing: inside the create form a bare button
-// defaults to submit and would post the form on every peek.
-function PasswordField({ value, onChange, ...rest }) {
-  const [shown, setShown] = useState(false);
-  return (
-    <span className="ad-pw">
-      <input
-        type={shown ? 'text' : 'password'}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        {...rest}
-      />
-      <button
-        type="button"
-        className="ad-eye"
-        aria-label={shown ? 'Hide password' : 'Show password'}
-        aria-pressed={shown}
-        onClick={() => setShown((s) => !s)}
-      >
-        {shown ? '🙈' : '👁'}
-      </button>
-    </span>
-  );
-}
 
 function Assignments({ user, events, onError }) {
   const [mine, setMine] = useState([]);
