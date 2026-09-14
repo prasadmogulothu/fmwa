@@ -162,16 +162,13 @@ export default function Users() {
       <form className="ad-grid" onSubmit={create}>
         <label>
           Username
-          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <input
-              type="text"
-              value={username}
-              required
-              placeholder="giri"
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <span className="ad-dim">{DOMAIN}</span>
-          </span>
+          <input
+            type="text"
+            value={username}
+            required
+            placeholder="giri"
+            onChange={(e) => setUsername(e.target.value)}
+          />
         </label>
         <label>
           Password
