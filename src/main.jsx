@@ -12,7 +12,30 @@ import './designs/a/style.css';
 import './designs/b/style.css';
 
 // Code-split: the public site ships none of the admin area or supabase-js.
-const Admin = lazy(() => import('./admin/Admin.jsx'));
+//
+// A returning PWA user boots a precached index.html that points at the
+// previous deploy's Admin-<hash>.js. That file is gone, vercel.json's
+// catch-all answers with HTML, and the import dies on a MIME error behind a
+// Suspense fallback that says "Loading…" forever. Reload once to pick up the
+// new index.html; the sessionStorage flag stops that becoming a loop when the
+// import is failing for some other reason.
+const RELOADED = 'fmwa-chunk-reload';
+const Admin = lazy(() =>
+  import('./admin/Admin.jsx').then(
+    (m) => {
+      sessionStorage.removeItem(RELOADED);
+      return m;
+    },
+    (e) => {
+      if (sessionStorage.getItem(RELOADED)) throw e;
+      sessionStorage.setItem(RELOADED, '1');
+      location.reload();
+      // Never settles: the page is on its way out, and resolving would render
+      // the fallback's replacement against a document being torn down.
+      return new Promise(() => {});
+    }
+  )
+);
 
 // React Router keeps the old scroll position across routes; a gallery opened
 // from halfway down the home page would otherwise start halfway down too.

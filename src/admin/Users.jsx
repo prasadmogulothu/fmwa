@@ -14,6 +14,13 @@ async function call(token, method, body, query = '') {
   return data;
 }
 
+// Anything that isn't one of the two roles this screen creates is shown
+// verbatim. A new account that landed as plain `authenticated` gets no
+// access and no Assignments checkboxes, and labelling it "Festival
+// committee" would hide exactly that.
+const roleLabel = (r) =>
+  r === ADMIN ? 'Administrator' : r === COMMITTEE ? 'Festival committee' : r;
+
 function Assignments({ user, events, onError }) {
   const [mine, setMine] = useState([]);
 
@@ -35,7 +42,14 @@ function Assignments({ user, events, onError }) {
       ? sb.from('fmwa_event_editors').insert({ user_id: user.id, event_id: eventId })
       : sb.from('fmwa_event_editors').delete().eq('user_id', user.id).eq('event_id', eventId);
     const { error } = await q;
-    if (error) return onError(error.message);
+    // 23505 is the (user_id, event_id) primary key: a double-tap on a phone
+    // fires two inserts and the second one means already-assigned, not failed.
+    if (error && error.code !== '23505') {
+      if (error.code === '42501') {
+        return onError('You do not have permission to change assignments.');
+      }
+      return onError(error.message);
+    }
     load();
   }
 
@@ -92,10 +106,19 @@ export default function Users() {
       setErr('Enter just the name before the @, not the whole address.');
       return;
     }
+    if (!/^[a-z0-9._-]+$/.test(local)) {
+      setErr('Use only letters, numbers, dots, dashes and underscores — no spaces.');
+      return;
+    }
     const email = local + DOMAIN;
     try {
-      await call(token, 'POST', { email, password, role });
+      const made = await call(token, 'POST', { email, password, role });
       setOk(`${email} created.`);
+      // If GoTrue ignored the role on create, the account exists but has no
+      // access — say so now rather than letting them find out at sign-in.
+      if (made?.role !== role) {
+        setErr(`Created, but the role came back as "${made?.role}" — they will have no access.`);
+      }
       setUsername('');
       setPassword('');
       load();
@@ -105,7 +128,8 @@ export default function Users() {
     }
   }
 
-  async function drop(id) {
+  async function drop(id, email) {
+    if (!window.confirm(`Delete ${email}? This cannot be undone.`)) return;
     setErr('');
     try {
       await call(token, 'DELETE', null, `?id=${encodeURIComponent(id)}`);
@@ -164,11 +188,9 @@ export default function Users() {
         <section className="ad-day" key={u.id}>
           <div className="ad-row">
             <b>{u.email}</b>
-            <span className="ad-dim">
-              {u.role === ADMIN ? 'Administrator' : 'Festival committee'}
-            </span>
+            <span className="ad-dim">{roleLabel(u.role)}</span>
             {u.id !== userId && (
-              <button type="button" className="ad-ghost" onClick={() => drop(u.id)}>
+              <button type="button" className="ad-ghost" onClick={() => drop(u.id, u.email)}>
                 Delete
               </button>
             )}

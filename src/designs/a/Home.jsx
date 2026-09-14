@@ -69,11 +69,19 @@ export default function Home() {
           </Link>
         </div>
         <div className="a-about-r">
-          {/* ponytail: no destination yet — deliberately inert until there is
-              a present event to point it at. */}
-          <button className="a-present" type="button">
-            Present Event Details
-          </button>
+          {/* Hidden unless the programme table below is actually rendered —
+              a button that scrolls nowhere is worse than no button. */}
+          {now?.days.length > 0 && (
+            <button
+              className="a-present"
+              type="button"
+              onClick={() =>
+                document.querySelector('.a-tt')?.scrollIntoView({ behavior: 'smooth' })
+              }
+            >
+              Present Event Details
+            </button>
+          )}
           <dl className="a-plate">
             <div>
               <dt>Formed</dt>

@@ -150,8 +150,12 @@ export default function Timetable() {
   }
 
   async function togglePublish() {
+    const next = !event.timetable_published;
     try {
-      await setPublished(eventId, !event.timetable_published);
+      await setPublished(eventId, next);
+      // The write succeeded, so the banner is already true — don't leave it
+      // reading "Draft" if the refresh below is the thing that fails.
+      setEvent((e) => ({ ...e, timetable_published: next }));
       load();
     } catch (error) {
       setErr(error.message);

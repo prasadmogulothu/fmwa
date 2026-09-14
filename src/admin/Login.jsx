@@ -7,17 +7,23 @@ export default function Login() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
 
+  // Deliberately vague: a precise message tells an attacker which half was
+  // right. Identical on both branches below so neither half is ever disclosed.
+  const WRONG = 'That username and password did not match.';
+  const OFFLINE = 'Could not reach the server. Check your connection and try again.';
+
   async function submit(e) {
     e.preventDefault();
     setBusy(true);
     setErr('');
     try {
       const { error } = await signIn(username, password);
-      // Deliberately vague: a precise message tells an attacker which half was
-      // right. The committee only ever has one account each anyway.
-      if (error) setErr('That email and password did not match.');
+      // supabase-js returns an error object for a dropped request too, so
+      // someone on bad signal would otherwise be told their password is wrong.
+      if (error)
+        setErr(error.name === 'AuthRetryableFetchError' || !error.status ? OFFLINE : WRONG);
     } catch {
-      setErr('That email and password did not match.');
+      setErr(WRONG);
     }
     setBusy(false);
   }
