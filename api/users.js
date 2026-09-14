@@ -7,6 +7,11 @@ const URL = process.env.SUPABASE_URL;
 const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const ROLES = ['fmwa_admin', 'fmwa_committee'];
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// The id reaches a URL template (`admin(`/${id}`, ...)`) verbatim, and the
+// WHATWG URL parser normalises '..' segments — an unvalidated id can walk the
+// path out of /auth/v1/admin/users and into an arbitrary Supabase endpoint,
+// carried with the service-role key. A UUID check closes that off entirely.
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const admin = (path, init = {}) =>
   fetch(`${URL}/auth/v1/admin/users${path}`, {
@@ -52,7 +57,7 @@ export default async function handler(req, res) {
     if (!EMAIL.test(String(email || ''))) {
       return res.status(400).json({ error: 'That email address does not look right.' });
     }
-    if (String(password || '').length < 10) {
+    if (typeof password !== 'string' || password.length < 10) {
       return res.status(400).json({ error: 'Password must be at least 10 characters.' });
     }
     if (!ROLES.includes(role)) {
@@ -71,9 +76,12 @@ export default async function handler(req, res) {
 
   if (req.method === 'DELETE') {
     const id = String(req.query.id || '');
-    if (!id) return res.status(400).json({ error: 'Missing id.' });
-    if (id === me.id) return res.status(400).json({ error: 'You cannot delete your own account.' });
-    const r = await admin(`/${id}`, { method: 'DELETE' });
+    if (!UUID.test(id)) return res.status(400).json({ error: 'Missing id.' });
+    const target = id.toLowerCase();
+    if (target === me.id.toLowerCase()) {
+      return res.status(400).json({ error: 'You cannot delete your own account.' });
+    }
+    const r = await admin(`/${target}`, { method: 'DELETE' });
     if (!r.ok) return res.status(502).json({ error: 'Could not delete user.' });
     return res.status(204).end();
   }

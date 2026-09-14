@@ -107,6 +107,7 @@ export default function Users() {
       load();
     } catch (error) {
       setErr(error.message);
+      setPassword('');
     }
   }
 

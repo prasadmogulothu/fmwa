@@ -13,7 +13,11 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,woff2}'],
         // Admin chunk carries supabase-js; never precache it for public visitors.
-        globIgnores: ['**/Admin-*.js', '**/Admin-*.css']
+        globIgnores: ['**/Admin-*.js', '**/Admin-*.css'],
+        // Without this, the SW's navigateFallback serves cached index.html for
+        // an address-bar visit to /api/users, which looks exactly like the
+        // vercel.json catch-all swallowing the function when nothing is wrong.
+        navigateFallbackDenylist: [/^\/api\//]
       },
       manifest: {
         name: 'Fortune Meadows Welfare Association',

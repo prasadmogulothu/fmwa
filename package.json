@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "node src/data/schedule.check.mjs"
+    "check": "node src/data/schedule.check.mjs && node api/users.check.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
