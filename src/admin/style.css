@@ -1,0 +1,77 @@
+/* The admin area is deliberately plain — it is a tool, not the public site. */
+.ad,
+.ad-login {
+  --ad-ink: #241b12;
+  --ad-dim: #6d6154;
+  --ad-line: rgba(36, 27, 18, 0.18);
+  --ad-terra: #c2542a;
+  font-family: Karla, system-ui, sans-serif;
+  color: var(--ad-ink);
+  background: #f6f2ea;
+  min-height: 100dvh;
+}
+.ad-login { display: grid; place-items: center; padding: 24px; }
+.ad-card {
+  background: #fff;
+  border: 1px solid var(--ad-line);
+  border-radius: 10px;
+  padding: 28px;
+  width: min(380px, 100%);
+  display: grid;
+  gap: 14px;
+}
+.ad-card h1 { font-size: 22px; margin: 0; }
+.ad-card > p { margin: 0; color: var(--ad-dim); font-size: 14px; }
+.ad-card label { display: grid; gap: 6px; font-size: 13px; color: var(--ad-dim); }
+.ad input,
+.ad-card input,
+.ad select,
+.ad textarea {
+  font: inherit;
+  color: var(--ad-ink);
+  padding: 9px 11px;
+  border: 1px solid var(--ad-line);
+  border-radius: 7px;
+  background: #fff;
+  width: 100%;
+}
+.ad button,
+.ad-card button {
+  font: inherit;
+  font-size: 14px;
+  padding: 9px 16px;
+  border: 1px solid var(--ad-terra);
+  border-radius: 7px;
+  background: var(--ad-terra);
+  color: #fff;
+  cursor: pointer;
+}
+.ad button[disabled] { opacity: 0.55; cursor: default; }
+.ad .ad-ghost { background: none; color: var(--ad-ink); border-color: var(--ad-line); }
+.ad-err { color: #a3281b; font-size: 13.5px; margin: 0; }
+.ad-ok { color: #1d6b45; font-size: 13.5px; margin: 0; }
+
+.ad-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 14px clamp(16px, 4vw, 32px);
+  border-bottom: 1px solid var(--ad-line);
+  background: #fff;
+}
+.ad-head nav { display: flex; gap: 14px; }
+.ad-head a { color: var(--ad-ink); font-size: 14px; }
+.ad-who { margin-left: auto; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ad-dim); }
+.ad-main { padding: clamp(18px, 3vw, 32px); max-width: 1100px; }
+.ad-main h2 { font-size: 20px; margin: 0 0 14px; }
+.ad-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ad-line);
+}
+.ad-grid { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin: 16px 0; }
+.ad-grid label { display: grid; gap: 5px; font-size: 12px; color: var(--ad-dim); }

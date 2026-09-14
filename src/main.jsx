@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AHome from './designs/a/Home.jsx';
@@ -10,6 +10,9 @@ import BEvent from './designs/b/Event.jsx';
 import './base.css';
 import './designs/a/style.css';
 import './designs/b/style.css';
+
+// Code-split: the public site ships none of the admin area or supabase-js.
+const Admin = lazy(() => import('./admin/Admin.jsx'));
 
 // React Router keeps the old scroll position across routes; a gallery opened
 // from halfway down the home page would otherwise start halfway down too.
@@ -31,6 +34,14 @@ createRoot(document.getElementById('root')).render(
         <Route path="/event/:slug" element={<AEvent />} />
         <Route path="/aboutus" element={<AAbout />} />
         <Route path="/news" element={<ANews />} />
+        <Route
+          path="/admin/*"
+          element={
+            <Suspense fallback={null}>
+              <Admin />
+            </Suspense>
+          }
+        />
         <Route path="/b" element={<BHome />} />
         <Route path="/b/event/:slug" element={<BEvent />} />
         <Route path="*" element={<Navigate to="/" replace />} />
