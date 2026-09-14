@@ -9,8 +9,19 @@ async function call(token, method, body, query = '') {
     body: body ? JSON.stringify(body) : undefined
   });
   if (r.status === 204) return null;
-  const data = await r.json().catch(() => ({}));
+  let data = {};
+  let parsed = true;
+  try {
+    data = await r.json();
+  } catch {
+    parsed = false;
+  }
   if (!r.ok) throw new Error(data.error || 'Request failed.');
+  if (!parsed) {
+    throw new Error(
+      'The user API did not return JSON. If you are running `npm run dev`, the admin Users page needs `npx vercel dev` instead — plain Vite does not run the /api functions.'
+    );
+  }
   return data;
 }
 
@@ -84,7 +95,8 @@ export default function Users() {
   const load = useCallback(async () => {
     if (!token) return;
     try {
-      setUsers(await call(token, 'GET'));
+      const data = await call(token, 'GET');
+      setUsers(Array.isArray(data) ? data : []);
       setEvents(await listEvents(true, userId));
     } catch (e) {
       setErr(e.message);
@@ -184,7 +196,7 @@ export default function Users() {
       {err && <p className="ad-err">{err}</p>}
       {ok && <p className="ad-ok">{ok}</p>}
 
-      {users.map((u) => (
+      {(Array.isArray(users) ? users : []).map((u) => (
         <section className="ad-day" key={u.id}>
           <div className="ad-row">
             <b>{u.email}</b>
