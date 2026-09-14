@@ -37,6 +37,16 @@ the top of that file. It creates:
   Postgres role
 - storage bucket `fmwa` — public read, admin write, for gallery uploads
 
+Then run `supabase-timetable.sql` and follow its three steps. It adds:
+
+- `fmwa_event_days`, `fmwa_programs` — the day-by-day programme for an event.
+  Public read only when the parent event has `timetable_published = true`.
+- `fmwa_event_editors` — which committee user may edit which event.
+- the `fmwa_committee` Postgres role, which can write timetables for its
+  assigned events and flip `fmwa_events.timetable_published`, and nothing else.
+  The restriction to that one column is a Postgres column-level grant, not a
+  UI convention.
+
 ## Admin (next)
 
 Not built yet. The seams are in place: sign in as `admin@fortunemeadows.local`,
