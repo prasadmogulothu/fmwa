@@ -21,6 +21,12 @@ export const SITE = '@fortunemeadows.local';
 // path out of /auth/v1/admin/users and into an arbitrary Supabase endpoint,
 // carried with the service-role key. A UUID check closes that off entirely.
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+// Exported so api/users.check.mjs tests the rule the handler actually applies,
+// instead of a copy of the number that can drift away from it.
+export const MIN_PASSWORD = 8;
+
+const weak = (p) => typeof p !== 'string' || p.length < MIN_PASSWORD;
+const WEAK = `Password must be at least ${MIN_PASSWORD} characters.`;
 
 const ours = (email) =>
   String(email || '')
@@ -81,9 +87,7 @@ export default async function handler(req, res) {
     if (!ours(email)) {
       return res.status(400).json({ error: `Accounts can only be created at ${SITE}.` });
     }
-    if (typeof password !== 'string' || password.length < 8) {
-      return res.status(400).json({ error: 'Password must be at least 8 characters.' });
-    }
+    if (weak(password)) return res.status(400).json({ error: WEAK });
     if (!ROLES.includes(role)) {
       return res.status(400).json({ error: 'Unknown role.' });
     }
@@ -117,6 +121,25 @@ export default async function handler(req, res) {
     return res.status(204).end();
   }
 
-  res.setHeader('Allow', 'GET, POST, DELETE');
+  if (req.method === 'PATCH') {
+    const { id, password } = req.body || {};
+    if (!UUID.test(String(id || ''))) return res.status(400).json({ error: 'Missing id.' });
+    if (weak(password)) return res.status(400).json({ error: WEAK });
+    const target = String(id).toLowerCase();
+    // Same shape as DELETE, and for a worse reason: a reset on another
+    // tenant's admin hands over their whole site. Look the target up and
+    // refuse anything outside this domain before the service key writes.
+    const who = await admin(`/${target}`);
+    if (!who.ok) return res.status(404).json({ error: 'No such user.' });
+    const { email } = await who.json();
+    if (!ours(email)) {
+      return res.status(403).json({ error: 'That account is not yours to change.' });
+    }
+    const r = await admin(`/${target}`, { method: 'PUT', body: JSON.stringify({ password }) });
+    if (!r.ok) return res.status(502).json({ error: 'Could not set the password.' });
+    return res.status(204).end();
+  }
+
+  res.setHeader('Allow', 'GET, POST, PATCH, DELETE');
   return res.status(405).end();
 }

@@ -5,7 +5,7 @@
 // than importing the handler, which needs SUPABASE_URL/SERVICE env. Importing
 // the real constants, not copies, so loosening either one fails here.
 import assert from 'node:assert/strict';
-import { SITE, UUID } from './users.js';
+import { MIN_PASSWORD, SITE, UUID } from './users.js';
 
 assert.equal(UUID.test('123e4567-e89b-12d3-a456-426614174000'), true, 'well-formed uuid passes');
 assert.equal(
@@ -28,5 +28,14 @@ assert.equal(ours('evil@notfortunemeadows.local'), false, 'suffix look-alike mus
 assert.equal(ours('x@muralielectronics.local'), false, 'another tenant must fail');
 assert.equal(ours('platform@hhappsolutions.local'), false, 'the platform admin must fail');
 assert.equal(ours(''), false, 'empty string must fail');
+
+// The rule POST and PATCH share. Lengths are derived from MIN_PASSWORD so
+// raising the constant moves what these assert, rather than breaking them.
+const weak = (p) => typeof p !== 'string' || p.length < MIN_PASSWORD;
+
+assert.equal(weak('x'.repeat(MIN_PASSWORD - 1)), true, 'one short of the minimum must fail');
+assert.equal(weak('x'.repeat(MIN_PASSWORD)), false, 'exactly the minimum passes');
+assert.equal(weak(undefined), true, 'a missing password must fail');
+assert.equal(weak('x'.repeat(MIN_PASSWORD).split('')), true, 'a non-string must fail');
 
 console.log('users.check.mjs OK');
