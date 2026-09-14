@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ADMIN, useSession } from '../lib/auth.js';
 import { clock, dayLabel } from '../data/schedule.js';
@@ -39,23 +39,22 @@ function DayCard({ day, onChange, onError }) {
     }
   }
 
+  async function dropDay() {
+    if (!window.confirm('Remove this day and all its programmes?')) return;
+    try {
+      await removeDay(day.id);
+      onChange();
+    } catch (err) {
+      onError(err.message);
+    }
+  }
+
   return (
     <section className="ad-day">
       <div className="ad-row">
         <b>{dayLabel(day.date)}</b>
         <span className="ad-dim">{day.label}</span>
-        <button
-          type="button"
-          className="ad-ghost"
-          onClick={async () => {
-            try {
-              await removeDay(day.id);
-              onChange();
-            } catch (err) {
-              onError(err.message);
-            }
-          }}
-        >
+        <button type="button" className="ad-ghost" onClick={dropDay}>
           Remove day
         </button>
       </div>
@@ -102,23 +101,35 @@ function DayCard({ day, onChange, onError }) {
 export default function Timetable() {
   const { id } = useParams();
   const eventId = Number(id);
-  const { role, userId } = useSession();
+  const { role, userId, ready } = useSession();
   const [event, setEvent] = useState(null);
   const [days, setDays] = useState([]);
   const [date, setDate] = useState('');
   const [label, setLabel] = useState('');
   const [err, setErr] = useState('');
+  const [loaded, setLoaded] = useState(false);
+  // load() is called repeatedly (mount, publish toggle, every day/programme
+  // change) rather than once in an effect, so a plain "alive" bool can't tell
+  // a stale call from the current one — bump a generation counter instead and
+  // drop any result that isn't from the latest call.
+  const gen = useRef(0);
 
   const load = useCallback(async () => {
     if (!userId) return;
+    const mine = ++gen.current;
     try {
       const all = await listEvents(role === ADMIN, userId);
-      const mine = all.find((e) => e.id === eventId) || null;
-      setEvent(mine);
-      setDays(mine ? await listDays(eventId) : []);
+      const found = all.find((e) => e.id === eventId) || null;
+      const nextDays = found ? await listDays(eventId) : [];
+      if (gen.current !== mine) return;
+      setEvent(found);
+      setDays(nextDays);
       setErr('');
     } catch (e) {
+      if (gen.current !== mine) return;
       setErr(e.message);
+    } finally {
+      if (gen.current === mine) setLoaded(true);
     }
   }, [eventId, role, userId]);
 
@@ -146,6 +157,10 @@ export default function Timetable() {
       setErr(error.message);
     }
   }
+
+  // Session resolution and the first fetch are both async — render nothing
+  // rather than "not assigned" while either is still in flight.
+  if (!ready || !loaded) return null;
 
   if (!event) {
     return (

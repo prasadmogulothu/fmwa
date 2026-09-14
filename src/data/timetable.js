@@ -3,6 +3,10 @@ import { sb } from '../lib/auth.js';
 // Every call here runs as the signed-in user's Postgres role, so RLS decides
 // what comes back. A write that touches nothing is a permission failure, not
 // an empty success — `.select()` on each mutation is what makes that visible.
+// That premise only holds for INSERT and UPDATE, though: a DELETE that
+// matches zero rows is just as often a row a double-click or another editor
+// already removed, so deletes get their own handler (`deleted` below) that
+// doesn't treat an already-gone row as denial.
 const rows = (res) => {
   if (res.error) throw new Error(res.error.message);
   return res.data || [];
@@ -13,6 +17,10 @@ const touched = (res) => {
   if (!res.data || !res.data.length) {
     throw new Error('You do not have access to that event.');
   }
+};
+
+const deleted = (res) => {
+  if (res.error) throw new Error(res.error.message);
 };
 
 export async function listEvents(isAdmin, userId) {
@@ -50,26 +58,33 @@ export async function addDay(eventId, date, label) {
   if (res.error) {
     // 23505 is the unique (event_id, date) constraint.
     if (res.error.code === '23505') throw new Error('That date is already on this timetable.');
+    // 42501 is a WITH CHECK violation on insert: this event isn't assigned to
+    // the caller, so RLS never lets the row exist for touched() to catch as
+    // a zero-row result.
+    if (res.error.code === '42501') throw new Error('You do not have access to that event.');
     throw new Error(res.error.message);
   }
   touched(res);
 }
 
 export async function removeDay(id) {
-  touched(await sb.from('fmwa_event_days').delete().eq('id', id).select());
+  deleted(await sb.from('fmwa_event_days').delete().eq('id', id).select());
 }
 
 export async function addProgram(dayId, startTime, title, note) {
-  touched(
-    await sb
-      .from('fmwa_programs')
-      .insert({ day_id: dayId, start_time: startTime, title, note: note || null })
-      .select()
-  );
+  const res = await sb
+    .from('fmwa_programs')
+    .insert({ day_id: dayId, start_time: startTime, title, note: note || null })
+    .select();
+  if (res.error) {
+    if (res.error.code === '42501') throw new Error('You do not have access to that event.');
+    throw new Error(res.error.message);
+  }
+  touched(res);
 }
 
 export async function removeProgram(id) {
-  touched(await sb.from('fmwa_programs').delete().eq('id', id).select());
+  deleted(await sb.from('fmwa_programs').delete().eq('id', id).select());
 }
 
 export async function setPublished(eventId, on) {
