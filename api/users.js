@@ -7,11 +7,25 @@ const URL = process.env.SUPABASE_URL;
 const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const ROLES = ['fmwa_admin', 'fmwa_committee'];
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// This Supabase project is shared with other HHAppSolutions sites, so auth.users
+// holds accounts that have nothing to do with Fortune Meadows. The tables were
+// namespaced; authentication was not. Every path below is pinned to this one
+// domain so the service-role key can never read, create or delete another
+// tenant's account. The leading '@' is load-bearing: without it
+// 'evil@notfortunemeadows.local' would pass endsWith(). Duplicated from
+// src/lib/auth.js on purpose — that module imports React and supabase-js and
+// cannot load in the serverless runtime.
+export const SITE = '@fortunemeadows.local';
 // The id reaches a URL template (`admin(`/${id}`, ...)`) verbatim, and the
 // WHATWG URL parser normalises '..' segments — an unvalidated id can walk the
 // path out of /auth/v1/admin/users and into an arbitrary Supabase endpoint,
 // carried with the service-role key. A UUID check closes that off entirely.
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const ours = (email) =>
+  String(email || '')
+    .toLowerCase()
+    .endsWith(SITE);
 
 const admin = (path, init = {}) =>
   fetch(`${URL}/auth/v1/admin/users${path}`, {
@@ -39,7 +53,11 @@ export default async function handler(req, res) {
 
   const me = await caller(req);
   if (!me) return res.status(401).json({ error: 'Sign in first.' });
-  if (me.role !== 'fmwa_admin') return res.status(403).json({ error: 'Administrators only.' });
+  // Role and tenant together, so "this function only ever touches
+  // fortunemeadows.local" holds for the caller as well as for every target.
+  if (me.role !== 'fmwa_admin' || !ours(me.email)) {
+    return res.status(403).json({ error: 'Administrators only.' });
+  }
 
   if (req.method === 'GET') {
     const r = await admin('');
@@ -48,7 +66,9 @@ export default async function handler(req, res) {
     return res
       .status(200)
       .json(
-        users.map((u) => ({ id: u.id, email: u.email, role: u.role, created_at: u.created_at }))
+        users
+          .filter((u) => ours(u.email))
+          .map((u) => ({ id: u.id, email: u.email, role: u.role, created_at: u.created_at }))
       );
   }
 
@@ -56,6 +76,10 @@ export default async function handler(req, res) {
     const { email, password, role } = req.body || {};
     if (!EMAIL.test(String(email || ''))) {
       return res.status(400).json({ error: 'That email address does not look right.' });
+    }
+    // The regex above forbids a second '@', which is what makes this airtight.
+    if (!ours(email)) {
+      return res.status(400).json({ error: `Accounts can only be created at ${SITE}.` });
     }
     if (typeof password !== 'string' || password.length < 10) {
       return res.status(400).json({ error: 'Password must be at least 10 characters.' });
@@ -81,6 +105,13 @@ export default async function handler(req, res) {
     if (target === me.id.toLowerCase()) {
       return res.status(400).json({ error: 'You cannot delete your own account.' });
     }
+    // The id is a free query param, so the GET filter guards nothing here:
+    // look the target up and refuse anything outside this site's domain.
+    const who = await admin(`/${target}`);
+    if (!who.ok) return res.status(404).json({ error: 'No such user.' });
+    const { email } = await who.json();
+    if (!ours(email))
+      return res.status(403).json({ error: 'That account is not yours to delete.' });
     const r = await admin(`/${target}`, { method: 'DELETE' });
     if (!r.ok) return res.status(502).json({ error: 'Could not delete user.' });
     return res.status(204).end();

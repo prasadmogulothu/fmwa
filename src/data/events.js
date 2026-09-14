@@ -82,7 +82,15 @@ export function useEvents() {
   const [ready, setReady] = useState(Boolean(live));
   useEffect(() => {
     if (live) return;
-    pending = pending || fetchEvents().catch(() => null);
+    // Clear the cache on failure: a resolved-null promise left in `pending`
+    // would be reused by every later mount, so one flaky request would kill
+    // live data for the whole session.
+    pending =
+      pending ||
+      fetchEvents().catch(() => {
+        pending = null;
+        return null;
+      });
     let alive = true;
     pending.then((r) => {
       // An event added in admin before its photos are uploaded keeps the
@@ -116,7 +124,15 @@ export function useTimetable() {
   const [ready, setReady] = useState(Boolean(liveTT));
   useEffect(() => {
     if (liveTT) return;
-    pendingTT = pendingTT || fetchTimetable().catch(() => null);
+    // Same retry-on-failure as useEvents, and it matters more here: nothing
+    // ships in the bundle, so a single failed fetch would hide the programme
+    // for the rest of the session with the rest of the page looking fine.
+    pendingTT =
+      pendingTT ||
+      fetchTimetable().catch(() => {
+        pendingTT = null;
+        return null;
+      });
     let alive = true;
     pendingTT.then((r) => {
       if (r) liveTT = r;
