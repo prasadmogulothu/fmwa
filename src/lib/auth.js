@@ -44,7 +44,9 @@ export function useSession() {
   return { session, role: roleOf(session), userId: session?.user?.id || null, ready };
 }
 
-export async function signIn(email, password) {
+export async function signIn(username, password) {
+  const id = String(username).trim().toLowerCase();
+  const email = id.includes('@') ? id : id + DOMAIN;
   const { error } = await sb.auth.signInWithPassword({ email, password });
   return { error };
 }
