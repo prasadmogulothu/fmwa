@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
-import { useEvents } from '../../data/events.js';
+import { useEvents, useTimetable } from '../../data/events.js';
+import { currentEvent, today } from '../../data/schedule.js';
 import { FEST } from '../../data/committee.js';
 import { Head, Foot } from './Chrome.jsx';
+import Timetable from './Timetable.jsx';
 
 // The committee note is stored as plain text with *starred* runs, the way it
 // was written in WhatsApp. Odd split pieces are the ones inside a * pair.
@@ -11,6 +13,9 @@ const Rich = ({ t }) => (
 
 export default function Home() {
   const { events } = useEvents();
+  const { timetable } = useTimetable();
+  const dated = events.map((e) => ({ ...e, days: timetable.get(e.slug) || [] }));
+  const now = currentEvent(dated, today());
 
   return (
     <div className="a">
@@ -85,6 +90,8 @@ export default function Home() {
           </dl>
         </div>
       </section>
+
+      {now && <Timetable days={now.days} title={`${now.title} — Programme`} />}
 
       <section className="a-fc">
         <div className="a-fc-in">

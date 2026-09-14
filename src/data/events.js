@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchEvents } from '../lib/sb.js';
+import { fetchEvents, fetchTimetable } from '../lib/sb.js';
 
 // Everything the site knows about the festivals.
 //
@@ -87,10 +87,13 @@ export function useEvents() {
     pending.then((r) => {
       // An event added in admin before its photos are uploaded keeps the
       // bundled ones, so a gallery never goes empty on a live update.
-      if (r) live = r.map((e) => {
-        const seed = EVENTS.find((s) => s.slug === e.slug);
-        return seed && !e.photos.length ? { ...e, photos: seed.photos, cover: e.cover || seed.cover } : e;
-      });
+      if (r)
+        live = r.map((e) => {
+          const seed = EVENTS.find((s) => s.slug === e.slug);
+          return seed && !e.photos.length
+            ? { ...e, photos: seed.photos, cover: e.cover || seed.cover }
+            : e;
+        });
       if (alive) {
         if (live) setRows(desc(live));
         setReady(true);
@@ -101,4 +104,30 @@ export function useEvents() {
     };
   }, []);
   return { events: rows, ready };
+}
+
+// Timetables are live-only — nothing ships in the bundle, so the section
+// simply does not render offline or before Supabase answers.
+let liveTT = null;
+let pendingTT = null;
+
+export function useTimetable() {
+  const [timetable, setTimetable] = useState(liveTT || new Map());
+  const [ready, setReady] = useState(Boolean(liveTT));
+  useEffect(() => {
+    if (liveTT) return;
+    pendingTT = pendingTT || fetchTimetable().catch(() => null);
+    let alive = true;
+    pendingTT.then((r) => {
+      if (r) liveTT = r;
+      if (alive) {
+        if (liveTT) setTimetable(liveTT);
+        setReady(true);
+      }
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return { timetable, ready };
 }

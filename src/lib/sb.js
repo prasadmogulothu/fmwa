@@ -30,3 +30,32 @@ export async function fetchEvents() {
     photos: (e.fmwa_photos || []).map((p) => p.url)
   }));
 }
+
+// One request: every published day with its programs embedded and the parent
+// event's slug alongside, ordered in the query rather than in the client.
+// Unpublished rows are filtered by RLS, not here.
+const TT_SELECT =
+  'select=date,label,fmwa_events!inner(slug),fmwa_programs(start_time,title,note,sort)' +
+  '&order=date.asc&fmwa_programs.order=start_time.asc,sort.asc';
+
+export async function fetchTimetable() {
+  const r = await fetch(`${SB_URL}/rest/v1/fmwa_event_days?${TT_SELECT}`, { headers: HEAD });
+  if (!r.ok) throw new Error('fmwa_event_days ' + r.status);
+  const rows = await r.json();
+  const by = new Map();
+  for (const row of rows) {
+    const slug = row.fmwa_events?.slug;
+    if (!slug) continue;
+    if (!by.has(slug)) by.set(slug, []);
+    by.get(slug).push({
+      date: row.date,
+      label: row.label || '',
+      programs: (row.fmwa_programs || []).map((p) => ({
+        start: p.start_time,
+        title: p.title,
+        note: p.note || ''
+      }))
+    });
+  }
+  return by;
+}

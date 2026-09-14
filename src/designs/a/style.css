@@ -416,6 +416,56 @@
   font-size: 15px;
 }
 
+/* timetable */
+.a-tt {
+  background: var(--paper);
+}
+.a-tt-in {
+  max-width: 1320px;
+  margin-inline: auto;
+  padding: clamp(30px, 3.6vw, 48px) clamp(16px, 4vw, 48px) clamp(40px, 5vw, 66px);
+}
+.a-tt-h { margin-bottom: clamp(18px, 2.4vw, 26px); }
+.a-tt-h h2 { font-size: clamp(28px, 4.2vw, 46px); color: var(--maroon, var(--terra)); }
+.a-tt-h p { color: var(--dim); font-size: 15px; font-style: italic; margin-top: 8px; }
+.a-tt-scroll { overflow-x: auto; }
+.a-tt-t {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.a-tt-day th {
+  padding: clamp(18px, 2vw, 26px) 0 10px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 400;
+}
+.a-tt-day span {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(21px, 2.4vw, 27px);
+}
+.a-tt-day i {
+  font-style: normal;
+  margin-left: 12px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+.a-tt-t tr + tr .a-tt-when,
+.a-tt-t tr + tr .a-tt-what { border-top: 1px solid rgba(36, 27, 18, 0.08); }
+.a-tt-when {
+  width: 1%;
+  white-space: nowrap;
+  padding: 13px 24px 13px 0;
+  vertical-align: baseline;
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 20px;
+  color: var(--terra);
+}
+.a-tt-what { padding: 13px 0; }
+.a-tt-what b { font-weight: 500; display: block; }
+.a-tt-what i { font-style: italic; color: var(--dim); font-size: 14.5px; }
+
 /* festivals */
 .a-fest {
   background: var(--canopy-bg);
