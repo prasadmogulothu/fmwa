@@ -3,6 +3,7 @@ import { ADMIN, COMMITTEE, signOut, useSession } from '../lib/auth.js';
 import Login from './Login.jsx';
 import EventList from './EventList.jsx';
 import Timetable from './Timetable.jsx';
+import Users from './Users.jsx';
 import './style.css';
 
 export default function Admin() {
@@ -45,6 +46,10 @@ export default function Admin() {
         <Routes>
           <Route index element={<EventList />} />
           <Route path="event/:id" element={<Timetable />} />
+          <Route
+            path="users"
+            element={role === ADMIN ? <Users /> : <Navigate to="/admin" replace />}
+          />
           <Route path="*" element={<Navigate to="/admin" replace />} />
         </Routes>
       </main>

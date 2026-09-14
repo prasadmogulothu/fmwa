@@ -85,3 +85,13 @@
 }
 .ad-day .ad-row:last-of-type { border-bottom: 0; }
 .ad-dim { color: var(--ad-dim); font-size: 13.5px; }
+
+.ad-check {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  color: var(--ad-ink);
+}
+.ad-check input { width: auto; }

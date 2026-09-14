@@ -47,12 +47,22 @@ Then run `supabase-timetable.sql` and follow its three steps. It adds:
   The restriction to that one column is a Postgres column-level grant, not a
   UI convention.
 
-## Admin (next)
+## Admin
 
-Not built yet. The seams are in place: sign in as `admin@fortunemeadows.local`,
-switch PostgREST into `fmwa_admin` via the JWT, write `fmwa_events` /
-`fmwa_photos`, and upload images to the `fmwa` bucket. The public site picks the
-changes up on next load with no rebuild.
+`/admin` is a lazy-loaded chunk — the public bundle contains none of it.
+Sign-in is Supabase email/password; the Postgres role in the JWT (`fmwa_admin`
+or `fmwa_committee`) decides what the account can do, and RLS enforces it.
+
+`api/users.js` is the only server-side code, and exists only because creating a
+Supabase user needs the service-role key. It requires two Vercel environment
+variables, set for production, preview and development:
+
+    SUPABASE_URL                 https://uuzexivlzoxszmnrpryr.supabase.co
+    SUPABASE_SERVICE_ROLE_KEY    Studio → Settings → API → service_role
+
+Never put the service-role key anywhere under `src/` — it would ship to every
+visitor. Run the admin area locally with `npx vercel dev` (not `npm run dev`),
+which is what serves `/api`.
 
 ## Deploy
 
