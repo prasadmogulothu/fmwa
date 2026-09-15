@@ -18,6 +18,26 @@ const niceDate = (d) => {
   });
 };
 
+// The association's facts. Rendered in the left column above "View details"
+// when there is an announcement — the right column is the announcement's —
+// and in the right column under it when there is not.
+const Plate = () => (
+  <dl className="a-plate">
+    <div>
+      <dt>Formed</dt>
+      <dd>2018</dd>
+    </div>
+    <div>
+      <dt>Founding president</dt>
+      <dd>K. V. Rajasekhar</dd>
+    </div>
+    <div>
+      <dt>Run by</dt>
+      <dd>Elected executive committee</dd>
+    </div>
+  </dl>
+);
+
 const Rich = ({ t }) => (
   <>{t.split('*').map((piece, i) => (i % 2 ? <b key={i}>{piece}</b> : piece))}</>
 );
@@ -86,6 +106,7 @@ export default function Home() {
             The committee handles the everyday running of the colony — water, security, the common
             areas, the park — and puts together the festivals the whole colony turns out for.
           </p>
+          {latest && <Plate />}
           <Link className="a-more" to="/aboutus">
             View details
           </Link>
@@ -125,20 +146,7 @@ export default function Home() {
               )}
             </section>
           )}
-          <dl className="a-plate">
-            <div>
-              <dt>Formed</dt>
-              <dd>2018</dd>
-            </div>
-            <div>
-              <dt>Founding president</dt>
-              <dd>K. V. Rajasekhar</dd>
-            </div>
-            <div>
-              <dt>Run by</dt>
-              <dd>Elected executive committee</dd>
-            </div>
-          </dl>
+          {!latest && <Plate />}
         </div>
       </section>
 

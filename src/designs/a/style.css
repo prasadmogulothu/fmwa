@@ -297,6 +297,10 @@
 .a-ln .a-more { margin-top: 12px; }
 
 .a-plate { margin: 8px 0 0; width: 100%; border-top: 1px solid var(--line); }
+/* In the left column the plate sits in a reading measure with the paragraphs
+   above it, rather than running the full width of the wider column, and it
+   needs its own gap before the "View details" link that now follows it. */
+.a-about-t .a-plate { max-width: 58ch; margin-top: 26px; }
 .a-plate div {
   display: flex;
   justify-content: space-between;
