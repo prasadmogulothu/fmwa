@@ -65,6 +65,17 @@ export const EVENTS = [
 
 export const getEvent = (slug) => EVENTS.find((e) => e.slug === slug);
 
+// A gallery photo is { url, year }. The bundled seed above is a plain list of
+// paths, so it is normalised to that shape here rather than in the renderer.
+//
+// The seed gets year: null deliberately — these files predate the year column
+// and only the Ganesh ones have a year anybody has actually confirmed.
+// A null year renders with no heading, exactly as the gallery looked before,
+// which is better than publishing a guessed one. Real years arrive with the
+// rows that live in Supabase.
+const asPhotos = (list) =>
+  (list || []).map((p) => (typeof p === 'string' ? { url: p, year: null } : p));
+
 // ---------------------------------------------------------------- live data
 // The seed above renders immediately (and offline). If the Supabase tables are
 // populated, they replace it on the first load and the result is reused for the
@@ -77,8 +88,12 @@ let pending = null;
 // funnel every screen reads through flips them here.
 const desc = (r) => r.slice().reverse();
 
+// The seed needs normalising too, so every screen sees one photo shape
+// whether the data came from the bundle or from Supabase.
+const seeded = EVENTS.map((e) => ({ ...e, photos: asPhotos(e.photos) }));
+
 export function useEvents() {
-  const [rows, setRows] = useState(() => desc(live || EVENTS));
+  const [rows, setRows] = useState(() => desc(live || seeded));
   const [ready, setReady] = useState(Boolean(live));
   useEffect(() => {
     if (live) return;
@@ -99,7 +114,7 @@ export function useEvents() {
         live = r.map((e) => {
           const seed = EVENTS.find((s) => s.slug === e.slug);
           return seed && !e.photos.length
-            ? { ...e, photos: seed.photos, cover: e.cover || seed.cover }
+            ? { ...e, photos: asPhotos(seed.photos), cover: e.cover || seed.cover }
             : e;
         });
       if (alive) {

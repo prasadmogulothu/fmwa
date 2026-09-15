@@ -38,6 +38,9 @@ export default function EventList() {
           <Link className="ad-ghost ad-btn" to={`/admin/event/${e.id}`}>
             Manage
           </Link>
+          <Link className="ad-ghost ad-btn" to={`/admin/event/${e.id}/photos`}>
+            Photos
+          </Link>
         </div>
       ))}
     </>

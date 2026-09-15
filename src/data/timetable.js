@@ -42,7 +42,7 @@ export async function listDays(eventId) {
   return rows(
     await sb
       .from('fmwa_event_days')
-      .select('id,date,label,fmwa_programs(id,start_time,title,note,sort)')
+      .select('id,date,label,image_url,fmwa_programs(id,start_time,title,note,sort,image_url)')
       .eq('event_id', eventId)
       .order('date', { ascending: true })
       .order('start_time', { referencedTable: 'fmwa_programs', ascending: true })
@@ -91,4 +91,47 @@ export async function setPublished(eventId, on) {
   touched(
     await sb.from('fmwa_events').update({ timetable_published: on }).eq('id', eventId).select()
   );
+}
+
+// Detaching an image from a programme or a day. The B2 object is deliberately
+// left where it is: an orphaned object is invisible and costs a fraction of a
+// paisa, whereas deleting it first and failing to clear the column leaves a
+// broken image on the public page. Row first, orphan logged — the ordering
+// §10 of backblaze-b2.md settles.
+//
+// ponytail: no sweeper for those orphans. A colony gallery replaces a handful
+// of images a year and B2's free tier is 10 GB. Write one if the bucket ever
+// grows enough to notice.
+export async function clearImage(table, id) {
+  if (table !== 'fmwa_programs' && table !== 'fmwa_event_days') {
+    throw new Error('Unknown table.');
+  }
+  touched(await sb.from(table).update({ image_url: null }).eq('id', id).select());
+}
+
+// ------------------------------------------------------------------ gallery
+// fmwa_photos is now writable by a committee member for events assigned to
+// them (supabase-gallery.sql), so these run under RLS exactly like the
+// timetable calls above: a write that touches nothing is a permission
+// failure, not an empty success.
+
+export async function listPhotos(eventId) {
+  return rows(
+    await sb
+      .from('fmwa_photos')
+      .select('id,url,caption,year,sort')
+      .eq('event_id', eventId)
+      .order('year', { ascending: false })
+      .order('sort', { ascending: true })
+  );
+}
+
+// The B2 object is deliberately left behind — same ordering as clearImage:
+// an orphan is invisible, a broken image on the public page is not.
+export async function removePhoto(id) {
+  deleted(await sb.from('fmwa_photos').delete().eq('id', id).select());
+}
+
+export async function setPhotoYear(id, year) {
+  touched(await sb.from('fmwa_photos').update({ year }).eq('id', id).select());
 }

@@ -9,8 +9,11 @@ export const SB = { url: SB_URL, key: SB_KEY };
 export const HEAD = { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY };
 
 // One request: events with their photos embedded, newest committee ordering first.
+// Photos come back newest year first, then in the committee's own order, so
+// the gallery groups by year without sorting anything in the client.
 const SELECT =
-  'select=slug,title,telugu,when_text,line,blurb,accent,cover,thumb,fmwa_photos(url,sort)&order=sort.asc&fmwa_photos.order=sort.asc';
+  'select=slug,title,telugu,when_text,line,blurb,accent,cover,thumb,fmwa_photos(url,year,sort)' +
+  '&order=sort.asc&fmwa_photos.order=year.desc,sort.asc';
 
 export async function fetchEvents() {
   const r = await fetch(`${SB_URL}/rest/v1/fmwa_events?${SELECT}`, { headers: HEAD });
@@ -27,7 +30,7 @@ export async function fetchEvents() {
     accent: e.accent || '#c2542a',
     cover: e.cover,
     thumb: e.thumb,
-    photos: (e.fmwa_photos || []).map((p) => p.url)
+    photos: (e.fmwa_photos || []).map((p) => ({ url: p.url, year: p.year || null }))
   }));
 }
 
@@ -35,7 +38,8 @@ export async function fetchEvents() {
 // event's slug alongside, ordered in the query rather than in the client.
 // Unpublished rows are filtered by RLS, not here.
 const TT_SELECT =
-  'select=date,label,fmwa_events!inner(slug),fmwa_programs(start_time,title,note,sort)' +
+  'select=date,label,image_url,fmwa_events!inner(slug),' +
+  'fmwa_programs(start_time,title,note,sort,image_url)' +
   '&order=date.asc&fmwa_programs.order=start_time.asc,sort.asc';
 
 export async function fetchTimetable() {
@@ -50,10 +54,12 @@ export async function fetchTimetable() {
     by.get(slug).push({
       date: row.date,
       label: row.label || '',
+      image: row.image_url || null,
       programs: (row.fmwa_programs || []).map((p) => ({
         start: p.start_time,
         title: p.title,
-        note: p.note || ''
+        note: p.note || '',
+        image: p.image_url || null
       }))
     });
   }

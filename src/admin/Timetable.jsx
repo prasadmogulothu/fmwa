@@ -1,18 +1,70 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ADMIN, useSession } from '../lib/auth.js';
+import ImagePicker from './ImagePicker.jsx';
 import { clock, dayLabel } from '../data/schedule.js';
 import {
   addDay,
   addProgram,
   listDays,
   listEvents,
+  clearImage,
   removeDay,
   removeProgram,
   setPublished
 } from '../data/timetable.js';
 
-function DayCard({ day, onChange, onError }) {
+// One image per programme row. The picker is behind a toggle rather than
+// always open, so a nine-day timetable does not render thirty file inputs.
+function ProgramRow({ program, eventId, onChange, onError }) {
+  const [open, setOpen] = useState(false);
+
+  async function detach() {
+    try {
+      await clearImage('fmwa_programs', program.id);
+      onChange();
+    } catch (err) {
+      onError(err.message);
+    }
+  }
+
+  return (
+    <>
+      <div className="ad-row">
+        <span>{clock(program.start_time)}</span>
+        <b>{program.title}</b>
+        <span className="ad-dim">{program.note}</span>
+        {program.image_url && (
+          <img className="ad-thumb" src={program.image_url} alt={`Photo for ${program.title}`} />
+        )}
+        <button type="button" className="ad-ghost" onClick={() => setOpen((v) => !v)}>
+          {program.image_url ? 'Replace photo' : 'Add photo'}
+        </button>
+        {program.image_url && (
+          <button type="button" className="ad-ghost" onClick={detach}>
+            Remove photo
+          </button>
+        )}
+        <button type="button" className="ad-ghost" onClick={() => onChange(program.id)}>
+          Remove
+        </button>
+      </div>
+      {open && (
+        <ImagePicker
+          eventId={eventId}
+          target={`program:${program.id}`}
+          label={program.image_url ? 'Replace the photo' : 'Photo for this programme'}
+          onDone={() => {
+            setOpen(false);
+            onChange();
+          }}
+        />
+      )}
+    </>
+  );
+}
+
+function DayCard({ day, eventId, onChange, onError }) {
   const [start, setStart] = useState('');
   const [title, setTitle] = useState('');
   const [note, setNote] = useState('');
@@ -60,14 +112,15 @@ function DayCard({ day, onChange, onError }) {
       </div>
 
       {(day.fmwa_programs || []).map((p) => (
-        <div className="ad-row" key={p.id}>
-          <span>{clock(p.start_time)}</span>
-          <b>{p.title}</b>
-          <span className="ad-dim">{p.note}</span>
-          <button type="button" className="ad-ghost" onClick={() => drop(p.id)}>
-            Remove
-          </button>
-        </div>
+        <ProgramRow
+          key={p.id}
+          program={p}
+          eventId={eventId}
+          onError={onError}
+          // ProgramRow calls this with an id to delete the programme, and with
+          // nothing to just reload after an image change.
+          onChange={(id) => (id ? drop(id) : onChange())}
+        />
       ))}
 
       <form className="ad-grid" onSubmit={add}>
@@ -187,6 +240,9 @@ export default function Timetable() {
         <button type="button" onClick={togglePublish}>
           {event.timetable_published ? 'Unpublish' : 'Publish'}
         </button>
+        <Link className="ad-ghost ad-btn" to={`/admin/event/${eventId}/photos`}>
+          Photos
+        </Link>
       </div>
 
       {err && <p className="ad-err">{err}</p>}
@@ -208,7 +264,7 @@ export default function Timetable() {
       </form>
 
       {days.map((d) => (
-        <DayCard key={d.id} day={d} onChange={load} onError={setErr} />
+        <DayCard key={d.id} day={d} eventId={eventId} onChange={load} onError={setErr} />
       ))}
       {!days.length && <p>No days yet. Add the first one above.</p>}
     </>

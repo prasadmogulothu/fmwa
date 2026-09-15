@@ -2,9 +2,11 @@ import { Link, Navigate, Route, Routes } from 'react-router-dom';
 import { ADMIN, COMMITTEE, signOut, useSession } from '../lib/auth.js';
 import Login from './Login.jsx';
 import EventList from './EventList.jsx';
+import Gallery from './Gallery.jsx';
 import Timetable from './Timetable.jsx';
 import Users from './Users.jsx';
 import Password from './Password.jsx';
+import Settings from './Settings.jsx';
 import './style.css';
 
 export default function Admin() {
@@ -35,6 +37,7 @@ export default function Admin() {
         <nav>
           <Link to="/admin">Events</Link>
           {role === ADMIN && <Link to="/admin/users">Users</Link>}
+          {role === ADMIN && <Link to="/admin/settings">Uploads</Link>}
           <Link to="/admin/password">Change password</Link>
           <a href="/">View site</a>
         </nav>
@@ -48,9 +51,14 @@ export default function Admin() {
         <Routes>
           <Route index element={<EventList />} />
           <Route path="event/:id" element={<Timetable />} />
+          <Route path="event/:id/photos" element={<Gallery />} />
           <Route
             path="users"
             element={role === ADMIN ? <Users /> : <Navigate to="/admin" replace />}
+          />
+          <Route
+            path="settings"
+            element={role === ADMIN ? <Settings /> : <Navigate to="/admin" replace />}
           />
           <Route path="password" element={<Password />} />
           <Route path="*" element={<Navigate to="/admin" replace />} />

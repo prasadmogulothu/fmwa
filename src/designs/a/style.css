@@ -429,6 +429,33 @@
 .a-tt-h h2 { font-size: clamp(28px, 4.2vw, 46px); color: var(--maroon, var(--terra)); }
 .a-tt-h p { color: var(--dim); font-size: 15px; font-style: italic; margin-top: 8px; }
 .a-tt-scroll { overflow-x: auto; }
+/* The list and the lead photo sit side by side, with a rule between them.
+   Two columns only when there is a photo — .a-tt-body-split is added by the
+   component — so a timetable without one keeps the full width.
+   minmax(0, ...) on the list column is load-bearing: a grid item defaults to
+   min-content width, which would let the table push past its track instead of
+   scrolling inside .a-tt-scroll. */
+.a-tt-body-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 340px);
+  gap: clamp(20px, 3vw, 40px);
+  align-items: start;
+}
+.a-tt-lead { margin: 0; }
+.a-tt-body-split .a-tt-lead {
+  border-left: 1px solid var(--line);
+  padding-left: clamp(20px, 3vw, 40px);
+}
+/* A white mat against the cream --paper, which is what makes the border read
+   as a mount rather than as a gap. */
+.a-tt-lead img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 5px solid #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 14px rgba(36, 27, 18, 0.1);
+}
 .a-tt-t {
   width: 100%;
   border-collapse: collapse;
@@ -465,6 +492,17 @@
 .a-tt-what { padding: 13px 0; }
 .a-tt-what b { font-weight: 500; display: block; }
 .a-tt-what i { font-style: italic; color: var(--dim); font-size: 14.5px; }
+/* One image per programme row. Capped rather than full-bleed so a timetable
+   with a picture on every row still reads as a timetable. */
+.a-tt-img {
+  display: block;
+  margin-top: 9px;
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 6px;
+}
 
 /* festivals */
 .a-fest {
@@ -581,6 +619,19 @@
 .a .shots img { width: 100%; transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.3, 1); }
 .a .shots button:hover img { transform: scale(1.04); }
 .a .noshots { color: var(--dim); font-style: italic; }
+/* Only rendered when a photo carries a year, so a gallery of undated bundled
+   photos looks exactly as it did before years existed. */
+.a .shots-year {
+  margin: clamp(18px, 2.4vw, 30px) 0 clamp(10px, 1.4vw, 16px);
+  padding-top: clamp(10px, 1.4vw, 16px);
+  border-top: 1px solid var(--rule, rgba(36, 27, 18, 0.16));
+  font-size: clamp(13px, 1.1vw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.a section:first-of-type .shots-year { margin-top: 0; border-top: 0; padding-top: 0; }
 
 .a-next {
   max-width: 1320px;
@@ -617,6 +668,19 @@
 }
 .a-foot-c b { display: block; font-size: 17px; }
 .a-foot-c small { display: block; margin-top: 5px; font-size: 12.5px; color: #9b8f7e; }
+
+@media (max-width: 900px) {
+  /* Stacked: the rule moves from the side of the photo to above it, so it
+     still separates the list from the picture. */
+  .a-tt-body-split { grid-template-columns: minmax(0, 1fr); }
+  .a-tt-body-split .a-tt-lead {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+    padding-top: clamp(18px, 3vw, 26px);
+  }
+  .a-tt-lead img { max-width: 420px; }
+}
 
 @media (max-width: 900px) {
   .a-about { grid-template-columns: 1fr; }

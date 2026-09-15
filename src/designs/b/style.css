@@ -310,6 +310,19 @@
 }
 .b .shots button:hover img { transform: scale(1.06); }
 .b .noshots { color: var(--dim); }
+/* Only rendered when a photo carries a year, so a gallery of undated bundled
+   photos looks exactly as it did before years existed. */
+.b .shots-year {
+  margin: clamp(16px, 2.2vw, 26px) 0 clamp(8px, 1.2vw, 14px);
+  font-size: clamp(13px, 1.1vw, 15px);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  border-bottom: 2px solid var(--rule);
+  padding-bottom: 6px;
+}
+.b section:first-of-type .shots-year { margin-top: 0; }
 
 .b-next {
   display: grid;
