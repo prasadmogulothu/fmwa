@@ -376,6 +376,42 @@ was raised in review of `api/users.check.mjs`.)
 
 ---
 
+## 10a. Why the server must validate, even with a token
+
+This came up directly and will come up again, so it is settled here.
+
+**A shared app secret or API key shipped to the browser is not a secret.**
+Whatever token the page holds in order to call the endpoint, the person using
+that page can read — DevTools → Network → "copy as cURL". Adding an app-level
+key to "stop direct access" just publishes a longer string.
+
+The subtler point is that authentication answers a different question from the
+one a size limit asks:
+
+| Question | Answered by |
+|---|---|
+| Is this a real committee user? | The per-user JWT, verified server-side — already implemented |
+| May they touch this event? | RLS plus the `fmwa_event_editors` check in §10 step 4 |
+| Is this file really under `max_bytes`, and really a JPEG? | **Only a server-side check** |
+
+The app already sends a per-user Supabase JWT and `api/users.js` already
+verifies it against GoTrue. That proves *who* is calling. It cannot prove that
+the caller's browser ran the canvas resize first — a legitimately signed-in
+committee member can POST a 50 MB file with a perfectly valid token, by
+accident (a broken resize path) or on purpose.
+
+So the client-side resize in §11 is for **user experience** — not sending 12 MP
+over mobile data — and the checks in §10 steps 5 and 6 are the **enforcement**.
+Both are needed; neither substitutes for the other. The server check is a byte
+length and a magic-byte sniff, perhaps three lines.
+
+A shared secret is only useful for keeping casual traffic off a *public,
+unauthenticated* endpoint. The upload endpoint requires a signed-in user, so it
+gains nothing there. If abuse by an authenticated user ever becomes a real
+concern, the answer is rate limiting per user id, not a client-held key.
+
+---
+
 ## 11. Client-side crop and resize
 
 New component, e.g. `src/admin/ImagePicker.jsx`, in the admin chunk.
