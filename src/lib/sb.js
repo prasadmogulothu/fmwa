@@ -37,10 +37,16 @@ export async function fetchEvents() {
 // One request: every published day with its programs embedded and the parent
 // event's slug alongside, ordered in the query rather than in the client.
 // Unpublished rows are filtered by RLS, not here.
+//
+// Days run newest first; the programmes inside a day stay in their own running
+// order, earliest start time first. The two orderings are deliberately
+// opposite — you want the latest day at the top, but a single day still reads
+// down the page as it happens. Admin keeps days ascending (see listDays in
+// src/data/timetable.js), because editing a timetable is chronological work.
 const TT_SELECT =
   'select=date,label,image_url,fmwa_events!inner(slug),' +
   'fmwa_programs(start_time,title,note,sort,image_url)' +
-  '&order=date.asc&fmwa_programs.order=start_time.asc,sort.asc';
+  '&order=date.desc&fmwa_programs.order=start_time.asc,sort.asc';
 
 export async function fetchTimetable() {
   const r = await fetch(`${SB_URL}/rest/v1/fmwa_event_days?${TT_SELECT}`, { headers: HEAD });
