@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ADMIN, COMMITTEE, DOMAIN, sb, useSession } from '../lib/auth.js';
 import { listEvents } from '../data/timetable.js';
+import { setNewsEditor } from '../data/news.js';
 import PasswordField from './PasswordField.jsx';
 
 async function call(token, method, body, query = '') {
@@ -40,6 +41,7 @@ const nameOf = (email) => String(email || '').split('@')[0];
 
 function Assignments({ user, events, onError }) {
   const [mine, setMine] = useState([]);
+  const [news, setNews] = useState(false);
 
   const load = useCallback(async () => {
     const { data, error } = await sb
@@ -48,6 +50,11 @@ function Assignments({ user, events, onError }) {
       .eq('user_id', user.id);
     if (error) return onError(error.message);
     setMine(data.map((r) => r.event_id));
+    // News access is a capability, not a per-event assignment, so it is one
+    // row in its own table rather than a column here.
+    const n = await sb.from('fmwa_news_editors').select('user_id').eq('user_id', user.id);
+    if (n.error) return onError(n.error.message);
+    setNews((n.data || []).length > 0);
   }, [user.id, onError]);
 
   useEffect(() => {
@@ -70,6 +77,15 @@ function Assignments({ user, events, onError }) {
     load();
   }
 
+  async function toggleNews(on) {
+    try {
+      await setNewsEditor(user.id, on);
+      load();
+    } catch (e) {
+      onError(e.message);
+    }
+  }
+
   return (
     <div className="ad-grid">
       {events.map((e) => (
@@ -82,6 +98,10 @@ function Assignments({ user, events, onError }) {
           {e.title}
         </label>
       ))}
+      <label className="ad-check">
+        <input type="checkbox" checked={news} onChange={(ev) => toggleNews(ev.target.checked)} />
+        News (noticeboard)
+      </label>
     </div>
   );
 }

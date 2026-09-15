@@ -71,3 +71,20 @@ export async function fetchTimetable() {
   }
   return by;
 }
+
+// Published announcements, newest first. Drafts are invisible here because the
+// RLS policy on fmwa_news restricts anon to published rows — not because of
+// anything in this query.
+const NEWS_SELECT = 'select=id,date,title,body&order=date.desc,id.desc';
+
+export async function fetchNews() {
+  const r = await fetch(`${SB_URL}/rest/v1/fmwa_news?${NEWS_SELECT}`, { headers: HEAD });
+  if (!r.ok) throw new Error('fmwa_news ' + r.status);
+  const rows = await r.json();
+  return rows.map((n) => ({
+    id: n.id,
+    date: n.date,
+    title: n.title,
+    body: n.body || ''
+  }));
+}

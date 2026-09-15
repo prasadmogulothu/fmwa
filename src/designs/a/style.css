@@ -366,6 +366,41 @@
   font-style: italic;
 }
 
+/* Noticeboard. A reading column rather than full width — announcements are
+   prose, and 1320px of it is unreadable. */
+.a-news {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: clamp(30px, 4vw, 56px) clamp(16px, 4vw, 48px) clamp(40px, 6vw, 80px);
+}
+.a-news article + article {
+  margin-top: clamp(26px, 3.4vw, 40px);
+  padding-top: clamp(26px, 3.4vw, 40px);
+  border-top: 1px solid var(--line);
+}
+.a-news time {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--terra);
+}
+.a-news h2 {
+  margin-top: 8px;
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(23px, 2.8vw, 31px);
+  font-weight: 400;
+  line-height: 1.25;
+}
+/* pre-line keeps the line breaks the writer typed without them having to
+   know any markup, while still wrapping normally. */
+.a-news p {
+  margin-top: 12px;
+  white-space: pre-line;
+  line-height: 1.68;
+  color: var(--ink, inherit);
+}
+
 /* about page */
 .a-eh-solo { grid-template-columns: minmax(0, 1fr); }
 

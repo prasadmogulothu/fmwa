@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchEvents, fetchTimetable } from '../lib/sb.js';
+import { fetchEvents, fetchNews, fetchTimetable } from '../lib/sb.js';
 
 // Everything the site knows about the festivals.
 //
@@ -161,4 +161,38 @@ export function useTimetable() {
     };
   }, []);
   return { timetable, ready };
+}
+
+// ------------------------------------------------------------------- news
+// Live-only, like timetables: nothing ships in the bundle, so the noticeboard
+// shows its empty state offline and before Supabase answers. Same
+// clear-the-cache-on-failure as the two above — without it one flaky request
+// would leave the page empty for the rest of the session.
+let liveNews = null;
+let pendingNews = null;
+
+export function useNews() {
+  const [news, setNews] = useState(liveNews || []);
+  const [ready, setReady] = useState(Boolean(liveNews));
+  useEffect(() => {
+    if (liveNews) return;
+    pendingNews =
+      pendingNews ||
+      fetchNews().catch(() => {
+        pendingNews = null;
+        return null;
+      });
+    let alive = true;
+    pendingNews.then((r) => {
+      if (r) liveNews = r;
+      if (alive) {
+        if (liveNews) setNews(liveNews);
+        setReady(true);
+      }
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return { news, ready };
 }

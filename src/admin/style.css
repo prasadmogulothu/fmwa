@@ -255,3 +255,26 @@
   align-items: center;
   font-size: 12px;
 }
+
+/* Noticeboard form. The date and title sit side by side in an .ad-grid; the
+   description is its own full-width row, because a textarea in a column that
+   narrow is unusable. */
+.ad-news-form {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 20px;
+  padding: 12px;
+  border: 1px solid var(--ad-line);
+  border-radius: 8px;
+}
+.ad-news-form > label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--ad-dim);
+}
+.ad-news-form textarea {
+  resize: vertical;
+  min-height: 110px;
+  font: inherit;
+}
