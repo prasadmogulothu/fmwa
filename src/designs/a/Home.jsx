@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useEvents, useTimetable } from '../../data/events.js';
+import { useEvents, useNews, useTimetable } from '../../data/events.js';
 import { currentEvent, today } from '../../data/schedule.js';
 import { FEST } from '../../data/committee.js';
 import { Head, Foot } from './Chrome.jsx';
@@ -7,13 +7,35 @@ import Timetable from './Timetable.jsx';
 
 // The committee note is stored as plain text with *starred* runs, the way it
 // was written in WhatsApp. Odd split pieces are the ones inside a * pair.
+// Built from the parts rather than new Date(d): parsing 'YYYY-MM-DD' gives
+// UTC midnight, which reads as the previous day anywhere east of Greenwich.
+const niceDate = (d) => {
+  const [y, m, day] = d.split('-').map(Number);
+  return new Date(y, m - 1, day).toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+};
+
 const Rich = ({ t }) => (
   <>{t.split('*').map((piece, i) => (i % 2 ? <b key={i}>{piece}</b> : piece))}</>
 );
 
+// Roughly how much of an announcement fits in the sidebar column before it
+// stops being a summary. Compared against the text rather than measured: the
+// CSS clamp below is what actually cuts it off, and a character count is
+// enough to decide whether anything was cut. Getting it slightly wrong shows
+// the link on a post that happened to fit, which is harmless.
+const SUMMARY = 320;
+
 export default function Home() {
   const { events } = useEvents();
   const { timetable } = useTimetable();
+  // Already sorted newest first by the query, so the latest is simply the
+  // first. Empty until Supabase answers, and empty offline.
+  const { news } = useNews();
+  const latest = news[0] || null;
   const dated = events.map((e) => ({ ...e, days: timetable.get(e.slug) || [] }));
   const now = currentEvent(dated, today());
 
@@ -81,6 +103,27 @@ export default function Home() {
             >
               Present Event Details
             </button>
+          )}
+          {/* Only when there is something to show: with no announcements the
+              right column falls back to exactly what it was before. */}
+          {latest && (
+            <section className="a-ln">
+              <h2>Latest News</h2>
+              <time dateTime={latest.date}>{niceDate(latest.date)}</time>
+              <h3>{latest.title}</h3>
+              {latest.body && (
+                <p className={latest.body.length > SUMMARY ? 'a-ln-body a-ln-cut' : 'a-ln-body'}>
+                  {latest.body}
+                </p>
+              )}
+              {/* Only offered when the text was actually cut short — a "read
+                  more" on a post shown in full is a dead end. */}
+              {latest.body.length > SUMMARY && (
+                <Link className="a-more" to="/news">
+                  View full news
+                </Link>
+              )}
+            </section>
           )}
           <dl className="a-plate">
             <div>
